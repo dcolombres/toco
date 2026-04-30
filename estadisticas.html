@@ -96,11 +96,10 @@
     <script>
         lucide.createIcons();
 
-        function initCharts() {
+        async function initCharts() {
+            await UI.initResellerStats();
             const reseller = State.getCurrentReseller();
             if (!reseller) return;
-            
-            UI.initResellerStats();
 
             // Charts
             const ctxSales = document.getElementById('salesChart').getContext('2d');

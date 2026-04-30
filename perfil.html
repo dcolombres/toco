@@ -56,7 +56,7 @@
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300"></i>
             </a>
-            <a href="https://wa.me/5491100000000" target="_blank" class="flex items-center justify-between p-5 hover:bg-surface transition-colors">
+            <a href="https://wa.me/5491154949191" target="_blank" class="flex items-center justify-between p-5 hover:bg-surface transition-colors">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-secondary"><i data-lucide="help-circle"></i></div>
                     <span class="font-bold text-text-main text-sm">Soporte Técnico</span>
@@ -98,15 +98,19 @@
     <script src="js/app.js"></script>
     <script>
         lucide.createIcons();
-        const reseller = State.getCurrentReseller();
-        if (reseller) {
-            document.getElementById('profile-name').textContent = reseller.name;
-            document.getElementById('profile-initial').textContent = reseller.name.charAt(0);
-            document.getElementById('profile-email').textContent = reseller.email;
-            document.getElementById('profile-status').textContent = reseller.status;
-            document.getElementById('profile-earnings').textContent = UI.formatCurrency(reseller.earnings);
-            document.getElementById('profile-sales').textContent = reseller.sales.reduce((acc, s) => acc + s.quantity, 0);
+        async function initPage() {
+            await State.loadResellerData();
+            const reseller = State.getCurrentReseller();
+            if (reseller) {
+                document.getElementById('profile-name').textContent = reseller.name;
+                document.getElementById('profile-initial').textContent = reseller.name.charAt(0);
+                document.getElementById('profile-email').textContent = reseller.email;
+                document.getElementById('profile-status').textContent = reseller.status || 'Activo';
+                document.getElementById('profile-earnings').textContent = UI.formatCurrency(reseller.earnings || 0);
+                document.getElementById('profile-sales').textContent = reseller.sales.reduce((acc, s) => acc + s.quantity, 0);
+            }
         }
+        initPage();
     </script>
 </body>
 </html>

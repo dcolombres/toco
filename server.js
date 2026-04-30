@@ -30,6 +30,11 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS requests (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, quantity INTEGER, status TEXT DEFAULT 'Pendiente', timestamp DATETIME DEFAULT (datetime('now','localtime')))`);
     db.run(`CREATE TABLE IF NOT EXISTS clients (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, name TEXT, zone TEXT, totalSales INTEGER DEFAULT 0)`);
     db.run(`CREATE TABLE IF NOT EXISTS master_stock (id INTEGER PRIMARY KEY CHECK (id = 1), quantity INTEGER DEFAULT 5000)`);
+    db.run(`CREATE TABLE IF NOT EXISTS costs (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT, amount REAL)`);
+    db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (1, 'Listones de madera', 'fijo', 0)`);
+    db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (2, 'Aceite de Linaza', 'fijo', 0)`);
+    db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (3, 'Packaging', 'fijo', 0)`);
+    db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (4, 'Inversión Inicial', 'unico', 0)`);
     db.run(`INSERT OR IGNORE INTO master_stock (id, quantity) VALUES (1, 5000)`);
     db.run(`INSERT OR IGNORE INTO users (name, email, password, role) VALUES ('Admin Master', 'admin@toco.com', 'admin123', 'admin')`);
 });
@@ -80,23 +85,68 @@ app.post('/api/requests', (req, res) => {
     db.run('INSERT INTO requests (userId, quantity) VALUES (?, ?)', [userId, quantity], () => res.json({ success: true }));
 });
 
+// Clients
+app.post('/api/clients', (req, res) => {
+    const { userId, name, zone } = req.body;
+    db.run('INSERT INTO clients (userId, name, zone) VALUES (?, ?, ?)', [userId, name, zone], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID, success: true });
+    });
+});
+app.put('/api/clients/:id', (req, res) => {
+    const { name, zone } = req.body;
+    db.run('UPDATE clients SET name = ?, zone = ? WHERE id = ?', [name, zone, req.params.id], () => res.json({ success: true }));
+});
+app.delete('/api/clients/:id', (req, res) => {
+    db.run('DELETE FROM clients WHERE id = ?', [req.params.id], () => res.json({ success: true }));
+});
+
 // --- ADMIN ENDPOINTS ---
 
 app.get('/api/admin/resellers', (req, res) => {
     db.all('SELECT id, name, email, stock FROM users WHERE role = "reseller"', [], (err, rows) => res.json(rows || []));
 });
 
+// Admin: All sales (with reseller name)
+app.get('/api/admin/sales', (req, res) => {
+    db.all(`SELECT s.*, u.name as resellerName FROM sales s LEFT JOIN users u ON s.userId = u.id ORDER BY s.timestamp DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows || []);
+    });
+});
+
+// Admin: All requests (with reseller name)
+app.get('/api/admin/requests', (req, res) => {
+    db.all(`SELECT r.*, u.name as resellerName FROM requests r LEFT JOIN users u ON r.userId = u.id ORDER BY r.timestamp DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows || []);
+    });
+});
+
 app.post('/api/admin/resellers', (req, res) => {
-    const { name, email, password } = req.body;
-    db.run('INSERT INTO users (name, email, password, role, stock) VALUES (?, ?, ?, "reseller", 0)', [name, email, password || 'toco123'], function(err) {
-        if (err) return res.status(500).json({ error: 'Email ya existe' });
-        res.json({ id: this.lastID, success: true });
+    const { name, email, password, initialStock = 0 } = req.body;
+    db.serialize(() => {
+        db.run('INSERT INTO users (name, email, password, role, stock) VALUES (?, ?, ?, "reseller", ?)', [name, email, password || 'toco123', initialStock], function(err) {
+            if (err) return res.status(500).json({ error: 'Email ya existe' });
+            const newUserId = this.lastID;
+            if (initialStock > 0) {
+                db.run('UPDATE master_stock SET quantity = quantity - ? WHERE id = 1', [initialStock], () => {
+                    res.json({ id: newUserId, success: true });
+                });
+            } else {
+                res.json({ id: newUserId, success: true });
+            }
+        });
     });
 });
 
 app.put('/api/admin/resellers/:id', (req, res) => {
     const { name, email, password } = req.body;
-    db.run('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, req.params.id], () => res.json({ success: true }));
+    if (password && password.trim() !== '') {
+        db.run('UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?', [name, email, password, req.params.id], () => res.json({ success: true }));
+    } else {
+        db.run('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, req.params.id], () => res.json({ success: true }));
+    }
 });
 
 app.delete('/api/admin/resellers/:id', (req, res) => {
@@ -109,6 +159,10 @@ app.delete('/api/admin/resellers/:id', (req, res) => {
     });
 });
 
+app.get('/api/admin/sales', (req, res) => {
+    db.all(`SELECT s.*, u.name as userName FROM sales s JOIN users u ON s.userId = u.id ORDER BY s.timestamp DESC`, [], (err, rows) => res.json(rows || []));
+});
+
 app.get('/api/admin/requests', (req, res) => {
     db.all(`SELECT r.*, u.name as resellerName FROM requests r JOIN users u ON r.userId = u.id ORDER BY r.timestamp DESC`, [], (err, rows) => res.json(rows || []));
 });
@@ -116,10 +170,34 @@ app.get('/api/admin/requests', (req, res) => {
 app.post('/api/admin/approve-request', (req, res) => {
     const { requestId, userId, quantity } = req.body;
     db.serialize(() => {
-        if (requestId) db.run('UPDATE requests SET status = "Aprobado" WHERE id = ?', [requestId]);
+        if (requestId) db.run('UPDATE requests SET status = "Entregado" WHERE id = ?', [requestId]);
         db.run('UPDATE users SET stock = stock + ? WHERE id = ?', [quantity, userId]);
         db.run('UPDATE master_stock SET quantity = quantity - ? WHERE id = 1', [quantity], () => res.json({ success: true }));
     });
+});
+
+app.post('/api/admin/reject-request', (req, res) => {
+    const { requestId } = req.body;
+    db.run('UPDATE requests SET status = "Rechazado" WHERE id = ?', [requestId], () => res.json({ success: true }));
+});
+
+// Costs endpoints
+app.get('/api/admin/costs', (req, res) => {
+    db.all('SELECT * FROM costs', [], (err, rows) => res.json(rows || []));
+});
+app.post('/api/admin/costs', (req, res) => {
+    const { name, type = 'variable', amount = 0 } = req.body;
+    db.run('INSERT INTO costs (name, type, amount) VALUES (?, ?, ?)', [name, type, amount], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID, success: true });
+    });
+});
+app.put('/api/admin/costs/:id', (req, res) => {
+    const { name, amount } = req.body;
+    db.run('UPDATE costs SET name = ?, amount = ? WHERE id = ?', [name, amount, req.params.id], () => res.json({ success: true }));
+});
+app.delete('/api/admin/costs/:id', (req, res) => {
+    db.run('DELETE FROM costs WHERE id = ?', [req.params.id], () => res.json({ success: true }));
 });
 
 app.get('/api/admin/master-stock', (req, res) => {
@@ -127,8 +205,12 @@ app.get('/api/admin/master-stock', (req, res) => {
 });
 
 app.post('/api/admin/master-stock', (req, res) => {
-    const { amount } = req.body;
-    db.run('UPDATE master_stock SET quantity = quantity + ? WHERE id = 1', [amount], () => res.json({ success: true }));
+    const { amount, action = 'add' } = req.body;
+    if (action === 'set') {
+        db.run('UPDATE master_stock SET quantity = ? WHERE id = 1', [amount], () => res.json({ success: true }));
+    } else {
+        db.run('UPDATE master_stock SET quantity = quantity + ? WHERE id = 1', [amount], () => res.json({ success: true }));
+    }
 });
 
 // SERVIR ARCHIVOS ESTÁTICOS (DESPUÉS DE LAS RUTAS API)

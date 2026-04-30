@@ -105,9 +105,6 @@
     <script>
         lucide.createIcons();
         
-        const reseller = State.getCurrentReseller();
-        if (!reseller) window.location.href = 'login.html';
-
         // Setup Form
         const commerceSelect = document.getElementById('commerce-select');
         const quantityInput = document.getElementById('quantity');
@@ -118,18 +115,26 @@
         const stockDisplay = document.getElementById('current-stock');
         const dateInput = document.getElementById('date');
 
-        // Populate Commerce Select
-        reseller.clients.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.name;
-            opt.textContent = `${c.name} (${c.zone})`;
-            commerceSelect.appendChild(opt);
-        });
+        async function initPage() {
+            if (!State.currentUser) return window.location.href = 'login.html';
+            await State.loadResellerData();
+            const reseller = State.getCurrentReseller();
+            if (!reseller) return window.location.href = 'login.html';
 
-        // Set default date to today
-        dateInput.valueAsDate = new Date();
-        stockDisplay.textContent = reseller.stock;
-        quantityInput.max = reseller.stock;
+            // Populate Commerce Select
+            reseller.clients.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = `${c.name} (${c.zone})`;
+                commerceSelect.appendChild(opt);
+            });
+
+            // Set default date to today
+            dateInput.valueAsDate = new Date();
+            stockDisplay.textContent = reseller.stock;
+            quantityInput.max = reseller.stock;
+        }
+        initPage();
 
         function updatePreviews() {
             const q = Number(quantityInput.value) || 0;
@@ -154,7 +159,7 @@
             const commerce = commerceSelect.value;
             
             if (!commerce) return alert('Por favor seleccioná un comercio');
-            if (q > reseller.stock) return alert('No tenés suficiente stock!');
+            if (q > State.getCurrentReseller().stock) return alert('No tenés suficiente stock!');
             if (p < TOCO_CONFIG.COST_PER_UNIT) return alert(`El precio de venta no puede ser menor al costo ($${TOCO_CONFIG.COST_PER_UNIT})`);
 
             if (!confirm(`¿Confirmás la venta de ${q} TOCOs a ${commerce} por un total de ${UI.formatCurrency(q * p)}?`)) return;

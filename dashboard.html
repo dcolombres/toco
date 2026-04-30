@@ -75,16 +75,20 @@
         <div id="requestModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
             <div class="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl fade-in text-center">
                 <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="plus-circle" class="w-8 h-8"></i>
+                    <i data-lucide="package" class="w-8 h-8"></i>
                 </div>
-                <h2 class="text-2xl font-title font-extrabold text-text-main mb-2">Solicitar Stock</h2>
-                <p class="text-text-sec text-sm mb-6">Indicá cuántos TOCOs necesitás. El admin aprobará tu pedido a la brevedad.</p>
+                <h2 class="text-2xl font-title font-extrabold text-text-main mb-2">Gestionar Stock</h2>
+                <p class="text-text-sec text-sm mb-6">Seleccioná la acción e ingresá la cantidad de unidades.</p>
                 
                 <div class="space-y-4">
-                    <input type="number" id="requestQuantity" value="25" min="1" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all text-center text-2xl font-bold">
+                    <select id="requestType" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all font-bold text-text-sec text-sm text-center">
+                        <option value="request">Pedir nuevo stock</option>
+                        <option value="return">Devolver stock a fábrica</option>
+                    </select>
+                    <input type="number" id="requestQuantity" value="25" min="1" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all text-center text-4xl font-bold">
                     <div class="flex gap-4">
                         <button onclick="closeRequestModal()" class="btn-secondary flex-1">Cancelar</button>
-                        <button onclick="submitRequest()" class="btn-primary flex-1">Solicitar</button>
+                        <button onclick="submitRequest()" class="btn-primary flex-1">Enviar</button>
                     </div>
                 </div>
             </div>
@@ -184,13 +188,18 @@
         }
 
         async function submitRequest() {
-            const qty = Number(reqQty.value);
+            let qty = Number(reqQty.value);
             if (qty <= 0) return alert('Ingresá una cantidad válida');
+            
+            const type = document.getElementById('requestType').value;
+            if (type === 'return') qty = -qty;
 
             await State.submitStockRequest(qty);
-            alert('Pedido enviado al admin correctamente.');
+            if (qty < 0) alert('Solicitud de devolución enviada.');
+            else alert('Pedido de stock enviado al admin.');
+            
             closeRequestModal();
-            renderRequestHistory();
+            if(typeof renderRequestHistory === 'function') renderRequestHistory();
         }
 
         // --- NOTIFICATIONS LOGIC ---
@@ -252,7 +261,7 @@
             // Ensure data structures exist
             if (!State.data.requests) State.data.requests = [];
             
-            const myRequests = State.data.requests.filter(r => r.resellerId === State.currentUser.email);
+            const myRequests = State.data.requests;
 
             list.innerHTML = '';
             if (myRequests.length === 0) {

@@ -140,6 +140,7 @@
         async function deleteClient(id) {
             if (confirm('¿Estás seguro de eliminar este comercio? Se perderá su historial de ventas vinculado.')) {
                 await API.deleteClient(id);
+                await State.loadResellerData();
                 renderClients();
             }
         }
@@ -162,11 +163,17 @@
                 await API.addClient(data);
             }
             
+            await State.loadResellerData();
             closeModal();
             renderClients();
         });
 
-        if (State.currentUser) renderClients();
+        async function initPage() {
+            if (!State.currentUser) return window.location.href = 'login.html';
+            await State.loadResellerData();
+            renderClients();
+        }
+        initPage();
     </script>
 </body>
 </html>
