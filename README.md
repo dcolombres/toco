@@ -10,33 +10,41 @@ El sistema está construido con una arquitectura moderna de tipo **SPA (Single P
 - **Backend:** Node.js + Express.js.
 - **Base de Datos:** SQLite (Almacenamiento en archivo local `toco.db`).
 
+
 ### Módulos Principales:
 1. **Web Institucional (`index.html`):** Landing page de alto impacto para captación de nuevos emprendedores.
 2. **Sistema de Gestión (Revendedores):** 
    - Dashboard de Stock, Ganancias y Deudas.
    - CRM de Comercios (ABM de locales).
    - Analítica de ventas interactiva.
-   - Centro de notificaciones y pedidos de stock.
+   - Centro de notificaciones y pedidos de stock (incluye **Devoluciones**).
 3. **Panel de Control Master (Admin):**
-   - Control global de métricas del ecosistema.
-   - ABM de Usuarios (Gestionar emprendedores).
-   - Sistema de aprobación de stock con un clic.
+   - **Analítica Avanzada:** Grilla de 4 gráficos (Tendencia Anual, Ranking Emprendedores, Ranking Comercios y Deuda Global).
+   - **Gestión de Costos:** Módulo para controlar Costos Fijos, Variables e **Inversión Inicial** (Gasto Único).
+   - **Gestión de Usuarios:** ABM completo con edición de perfiles y contraseñas.
+   - **Logística Inversa:** Aprobación de devoluciones de mercadería que reintegran stock al Master.
+
+---
+
+## 🚀 Despliegue en Producción (cPanel)
+
+El repositorio incluye una configuración lista para despliegue en cPanel:
+
+1. **`.cpanel.yml`**: Configuración automática para mover archivos desde el repositorio Git hacia la carpeta pública (ej: `public_html/toco`).
+2. **Sincronización de DB**: El archivo `toco.db` está incluido en el control de versiones para asegurar que las tablas y costos base se desplieguen correctamente.
+
+### Pasos para Actualizar:
+- Realizar `git push origin main`.
+- En cPanel Git Version Control: `Update from Remote` -> `Deploy Head Revision`.
+- **Importante**: Reiniciar la aplicación Node.js en cPanel para aplicar cambios en `server.js`.
 
 ---
 
 ## 🛠️ Tecnologías y Requisitos
 
-Para desarrolladores que deseen extender este sistema:
-
 - **Node.js:** v16.x o superior.
-- **SQLite3:** Motor de base de datos embebido.
+- **SQLite3:** Motor de base de datos embebido (archivo local `toco.db`).
 - **NPM:** Gestor de paquetes.
-
-### Estructura de Archivos Clave:
-- `/server.js`: El cerebro del backend. Contiene los Endpoints de la API y la lógica de la DB.
-- `/js/app.js`: El motor del frontend. Gestiona el estado y las llamadas `fetch`.
-- `/css/styles.css`: Estilos compartidos y sistema de diseño "Vibrant Growth".
-- `/toco.db`: Archivo de base de datos (se genera automáticamente).
 
 ---
 
