@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin - TOCO Gestión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        :root {
+            --admin-sidebar: #1e293b;
+            --admin-sidebar-hover: #334155;
+            --admin-text-dim: #94a3b8;
+        }
+        .sidebar { width: 280px; transition: all 0.3s ease; background-color: var(--admin-sidebar); }
+        @media (max-width: 1024px) { 
+            .sidebar { transform: translateX(-100%); position: fixed; }
+            .sidebar.open { transform: translateX(0); }
+        }
+        .main-content { flex: 1; min-height: 100vh; }
+        
+        .nav-link { color: var(--admin-text-dim); }
+        .nav-link:hover { background-color: var(--admin-sidebar-hover); color: white; }
+        .nav-link.active { background-color: var(--primary); color: white; font-weight: 700; }
+    </style>
+</head>
+<body class="bg-surface font-body flex">
+
+    <!-- Mobile Menu Toggle -->
+    <button onclick="toggleSidebar()" class="lg:hidden fixed top-4 right-4 z-[100] bg-primary text-white p-3 rounded-full shadow-lg">
+        <i data-lucide="menu"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar text-white h-screen sticky top-0 flex flex-col p-6 z-50 overflow-y-auto shadow-2xl lg:shadow-none">
+        <div class="mb-10 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-title font-extrabold text-primary tracking-tight">TOCO <span class="text-white">Admin</span></h1>
+                <p class="text-white/40 text-[10px] uppercase font-bold tracking-widest mt-1">Control Global</p>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-white/40 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <nav class="space-y-2 flex-1">
+            <a href="#" onclick="showSection('global')" class="nav-link active flex items-center gap-3 p-4 rounded-toco transition-all" id="nav-global">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard Global
+            </a>
+            <a href="#" onclick="showSection('resellers')" class="nav-link flex items-center gap-3 p-4 rounded-toco transition-all" id="nav-resellers">
+                <i data-lucide="users" class="w-5 h-5"></i> Emprendedores
+            </a>
+            <a href="#" onclick="showSection('requests')" class="nav-link flex items-center gap-3 p-4 rounded-toco transition-all relative" id="nav-requests">
+                <i data-lucide="bell" class="w-5 h-5"></i> Solicitudes
+                <span id="request-badge" class="absolute right-4 bg-primary text-[10px] px-1.5 py-0.5 rounded-full hidden font-bold">0</span>
+            </a>
+            <a href="#" onclick="showSection('stock')" class="nav-link flex items-center gap-3 p-4 rounded-toco transition-all" id="nav-stock">
+                <i data-lucide="box" class="w-5 h-5"></i> Master Stock
+            </a>
+            
+            <div class="pt-6 mt-6 border-t border-white/10">
+                <p class="text-[10px] font-bold text-white/30 uppercase tracking-widest px-4 mb-2">Acceso Directo</p>
+                <a href="index.html" class="nav-link flex items-center gap-3 p-4 rounded-toco transition-all">
+                    <i data-lucide="globe" class="w-5 h-5"></i> Ver Web Pública
+                </a>
+            </div>
+        </nav>
+
+        <button onclick="State.logout()" class="flex items-center gap-3 p-4 rounded-toco text-red-400 hover:bg-red-500/10 transition-all mt-auto font-bold group">
+            <i data-lucide="log-out" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> Cerrar Sesión
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content p-4 md:p-10 max-w-6xl mx-auto w-full">
+        
+        <!-- SECTION: GLOBAL DASHBOARD -->
+        <section id="section-global" class="space-y-8 fade-in">
+            <div class="flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-title font-extrabold text-text-main">Métricas Globales</h2>
+                    <p class="text-text-sec">Rendimiento histórico del ecosistema</p>
+                </div>
+                <div class="bg-white px-4 py-2 rounded-full border border-gray-100 text-sm font-bold text-text-sec shadow-sm">
+                    Mayo 2026
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50">
+                    <p class="text-[10px] font-bold uppercase text-text-sec mb-2">Ventas Totales</p>
+                    <p class="text-3xl font-title font-extrabold text-primary" id="g-sales">0 u.</p>
+                </div>
+                <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50">
+                    <p class="text-[10px] font-bold uppercase text-text-sec mb-2">Recaudación</p>
+                    <p class="text-3xl font-title font-extrabold text-secondary" id="g-revenue">$0</p>
+                </div>
+                <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50">
+                    <p class="text-[10px] font-bold uppercase text-text-sec mb-2">Deuda Global</p>
+                    <p class="text-3xl font-title font-extrabold text-error" id="g-debt">$0</p>
+                </div>
+                <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50">
+                    <p class="text-[10px] font-bold uppercase text-text-sec mb-2">Emprendedores</p>
+                    <p class="text-3xl font-title font-extrabold text-text-main" id="g-resellers">0</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50">
+                <h3 class="font-title font-bold text-lg mb-6 text-text-main">Tendencia de Crecimiento</h3>
+                <canvas id="globalChart" height="300"></canvas>
+            </div>
+        </section>
+
+        <!-- SECTION: RESELLER MANAGEMENT (ABM Users) -->
+        <section id="section-resellers" class="hidden space-y-8 fade-in">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-title font-extrabold text-text-main">Gestión de Usuarios</h2>
+                    <p class="text-text-sec">Administración de cuentas de emprendedores</p>
+                </div>
+                <button onclick="openUserModal()" class="btn-primary">
+                    <i data-lucide="user-plus" class="w-5 h-5"></i> Nuevo Emprendedor
+                </button>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl card-shadow flex gap-4 border border-gray-50">
+                <div class="flex-1 relative">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-sec"></i>
+                    <input type="text" id="user-search" placeholder="Buscar por nombre o email..." class="w-full pl-12 bg-surface border-none rounded-xl py-3 outline-none focus:ring-2 focus:ring-primary/20 transition-all">
+                </div>
+            </div>
+
+            <div id="admin-resellers-grid" class="grid md:grid-cols-2 gap-6">
+                <!-- User Cards -->
+            </div>
+        </section>
+
+        <!-- SECTION: STOCK REQUESTS -->
+        <section id="section-requests" class="hidden space-y-8 fade-in">
+            <div>
+                <h2 class="text-3xl font-title font-extrabold text-text-main">Solicitudes Pendientes</h2>
+                <p class="text-text-sec">Autorización de entrega de stock</p>
+            </div>
+            <div id="requests-container" class="space-y-4">
+                <!-- Request cards -->
+            </div>
+        </section>
+
+        <!-- SECTION: MASTER STOCK -->
+        <section id="section-stock" class="hidden space-y-8 fade-in">
+             <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-title font-extrabold text-text-main">Master Stock Fábrica</h2>
+                    <p class="text-text-sec">Control central de inventario</p>
+                </div>
+            </div>
+            <div class="bg-white p-10 rounded-3xl card-shadow border border-gray-50 text-center">
+                <div class="w-24 h-24 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="package" class="w-12 h-12"></i>
+                </div>
+                <p class="text-text-sec uppercase font-bold tracking-widest text-xs mb-2">Total disponible para asignar</p>
+                <h3 class="text-7xl font-title font-extrabold text-text-main mb-6" id="master-stock-display">0 <span class="text-xl text-text-sec">u.</span></h3>
+                <div class="flex gap-4 justify-center">
+                    <button onclick="updateMasterStock(1000)" class="btn-primary !px-10">Sumar 1000 (Producción)</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modals -->
+    <div id="userModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl fade-in">
+            <h2 id="userModalTitle" class="text-2xl font-title font-extrabold text-text-main mb-6">Nuevo Emprendedor</h2>
+            <form id="userForm" class="space-y-6">
+                <input type="hidden" id="userId">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Nombre Completo</label>
+                    <input type="text" id="userName" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Email</label>
+                    <input type="email" id="userEmail" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Contraseña (Opcional)</label>
+                    <input type="password" id="userPass" placeholder="toco123 por defecto" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                </div>
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeUserModal()" class="btn-secondary flex-1">Cancelar</button>
+                    <button type="submit" class="btn-primary flex-1">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="stockModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl fade-in">
+            <h2 class="text-2xl font-title font-extrabold text-text-main mb-2">Asignar Stock</h2>
+            <p id="resellerNameLabel" class="text-text-sec text-sm mb-6">--</p>
+            <form id="stockForm" class="space-y-6">
+                <input type="hidden" id="resellerIdInput">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Cantidad a sumar/restar</label>
+                    <input type="number" id="stockAmount" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all text-center text-2xl font-bold">
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="closeStockModal()" class="btn-secondary flex-1">Cancelar</button>
+                    <button type="submit" class="btn-primary flex-1">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        if (!State.isAdmin()) window.location.href = 'dashboard.html';
+        lucide.createIcons();
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        async function showSection(section) {
+            await State.loadAdminData();
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`section-${section}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link').forEach(a => {
+                a.classList.remove('bg-primary', 'text-white', 'font-bold');
+                a.classList.add('text-white/60');
+            });
+            const activeNav = document.getElementById(`nav-${section}`);
+            activeNav.classList.add('bg-primary', 'text-white', 'font-bold');
+            activeNav.classList.remove('text-white/60');
+            
+            if (window.innerWidth < 1024 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
+
+            if (section === 'global') renderGlobalChart();
+            if (section === 'resellers') renderResellersGrid();
+            if (section === 'requests') renderRequests();
+            if (section === 'stock') renderMasterStock();
+        }
+
+        async function renderMasterStock() {
+            const data = await API.getMasterStock();
+            document.getElementById('master-stock-display').innerHTML = `${data.quantity} <span class="text-xl text-text-sec">u.</span>`;
+        }
+
+        async function updateMasterStock(amount) {
+            await fetch('/api/admin/master-stock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount })
+            });
+            renderMasterStock();
+        }
+
+        let myChart = null;
+        function renderGlobalChart() {
+            const ctx = document.getElementById('globalChart').getContext('2d');
+            const stats = State.getGlobalStats();
+            document.getElementById('g-sales').textContent = `${stats.totalGlobalSales} u.`;
+            document.getElementById('g-revenue').textContent = UI.formatCurrency(stats.totalGlobalRevenue);
+            document.getElementById('g-debt').textContent = UI.formatCurrency(stats.totalGlobalDebt);
+            document.getElementById('g-resellers').textContent = stats.totalResellers;
+
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mayo'],
+                    datasets: [{
+                        label: 'Ventas Totales',
+                        data: [stats.totalGlobalSales],
+                        backgroundColor: '#FB8500',
+                        borderRadius: 12
+                    }]
+                }
+            });
+        }
+
+        function renderResellersGrid() {
+            const grid = document.getElementById('admin-resellers-grid');
+            grid.innerHTML = '';
+            State.data.resellers.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-3xl card-shadow border border-gray-50 flex flex-col gap-4';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-xl">${r.name.charAt(0)}</div>
+                            <div>
+                                <h4 class="font-bold text-text-main">${r.name}</h4>
+                                <p class="text-[10px] text-text-sec font-bold">${r.email}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface p-3 rounded-2xl">
+                        <p class="text-[9px] font-bold text-text-sec uppercase mb-1">Stock Actual</p>
+                        <p class="font-bold text-text-main text-lg">${r.stock} u.</p>
+                    </div>
+                    <div class="flex gap-2 pt-2 border-t border-gray-50 mt-2">
+                        <button onclick="openStockModal(${r.id}, '${r.name}')" class="btn-primary !py-2 !text-xs flex-1">Asignar Stock</button>
+                        <button onclick="editUser(${r.id})" class="p-2 bg-surface text-text-sec rounded-xl hover:text-primary"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                        <button onclick="deleteUser(${r.id})" class="p-2 bg-surface text-text-sec rounded-xl hover:text-error"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function renderRequests() {
+            const container = document.getElementById('requests-container');
+            const badge = document.getElementById('request-badge');
+            const pending = State.data.requests.filter(r => r.status === 'Pendiente');
+            badge.textContent = pending.length;
+            badge.classList.toggle('hidden', pending.length === 0);
+            container.innerHTML = '';
+            State.data.requests.forEach(req => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex justify-between items-center';
+                let statusColor = req.status === 'Aprobado' ? 'text-secondary bg-secondary/10' : 'text-text-sec bg-gray-100';
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-surface rounded-full flex items-center justify-center text-primary"><i data-lucide="package"></i></div>
+                        <div>
+                            <h4 class="font-bold text-text-main">${req.resellerName} pide ${req.quantity} TOCOs</h4>
+                            <p class="text-[10px] text-text-sec font-bold">${UI.formatDate(req.timestamp)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="px-3 py-1 rounded-full text-[9px] font-bold uppercase ${statusColor}">${req.status}</span>
+                        ${req.status === 'Pendiente' ? `
+                            <button onclick="approveRequest(${req.id}, ${req.userId}, ${req.quantity})" class="bg-secondary text-white p-2 rounded-lg"><i data-lucide="check" class="w-4 h-4"></i></button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        async function approveRequest(id, userId, qty) {
+            if (confirm('¿Aprobar stock?')) { await API.approveRequest(id, userId, qty); await showSection('requests'); }
+        }
+
+        function openUserModal(id = null) {
+            document.getElementById('userModal').classList.replace('hidden', 'flex');
+            if (id) {
+                const r = State.data.resellers.find(x => x.id === id);
+                document.getElementById('userId').value = r.id;
+                document.getElementById('userName').value = r.name;
+                document.getElementById('userEmail').value = r.email;
+                document.getElementById('userModalTitle').textContent = 'Editar Perfil';
+            } else { document.getElementById('userForm').reset(); document.getElementById('userId').value = ''; document.getElementById('userModalTitle').textContent = 'Nuevo Emprendedor'; }
+        }
+        function closeUserModal() { document.getElementById('userModal').classList.replace('flex', 'hidden'); }
+
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const data = { 
+                name: document.getElementById('userName').value, 
+                email: document.getElementById('userEmail').value,
+                password: document.getElementById('userPass').value || 'toco123'
+            };
+            if (id) await API.updateReseller(Number(id), data);
+            else await API.addReseller(data);
+            closeUserModal(); await showSection('resellers');
+        });
+
+        function openStockModal(id, name) {
+            document.getElementById('resellerIdInput').value = id;
+            document.getElementById('resellerNameLabel').textContent = `Emprendedor: ${name}`;
+            document.getElementById('stockModal').classList.replace('hidden', 'flex');
+        }
+        function closeStockModal() { document.getElementById('stockModal').classList.replace('flex', 'hidden'); }
+
+        document.getElementById('stockForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await API.approveRequest(null, Number(document.getElementById('resellerIdInput').value), Number(document.getElementById('stockAmount').value));
+            closeStockModal(); await showSection('resellers');
+        });
+
+        async function deleteUser(id) { if (confirm('¿Eliminar cuenta?')) { await API.deleteReseller(id); await showSection('resellers'); } }
+
+        showSection('global');
+    </script>
+</body>
+</html>

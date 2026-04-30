@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Comercios - TOCO Gestión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-surface font-body pb-32">
+
+    <!-- Header -->
+    <header class="bg-white px-6 py-6 border-b border-gray-100 sticky top-0 z-40 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a href="estadisticas.html" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-sec hover:text-primary transition-colors">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+            </a>
+            <h1 class="text-xl font-title font-extrabold text-text-main">Mis Comercios</h1>
+        </div>
+        <button onclick="openModal()" class="btn-primary !py-2 !px-4 text-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i> Nuevo
+        </button>
+    </header>
+
+    <main class="p-6 max-w-4xl mx-auto">
+        
+        <div id="clients-grid" class="grid gap-4">
+            <!-- Client Cards will be injected here -->
+        </div>
+
+    </main>
+
+    <!-- Modal ABM -->
+    <div id="clientModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl fade-in">
+            <h2 id="modalTitle" class="text-2xl font-title font-extrabold text-text-main mb-6">Agregar Comercio</h2>
+            
+            <form id="clientForm" class="space-y-6">
+                <input type="hidden" id="clientId">
+                
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Nombre del Local</label>
+                    <input type="text" id="clientName" required placeholder="Ej: Kiosco 'El Sol'" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Zona / Dirección</label>
+                    <input type="text" id="clientZone" required placeholder="Ej: Palermo Soho" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeModal()" class="btn-secondary flex-1">Cancelar</button>
+                    <button type="submit" class="btn-primary flex-1">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Nav inferior -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Inicio</span>
+        </a>
+        <a href="registrar-venta.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="plus-square" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Vender</span>
+        </a>
+        <a href="historial.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="list" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Historial</span>
+        </a>
+        <a href="estadisticas.html" class="flex flex-col items-center gap-1 text-primary">
+            <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Stats</span>
+        </a>
+    </nav>
+
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+
+        const grid = document.getElementById('clients-grid');
+        const modal = document.getElementById('clientModal');
+        const form = document.getElementById('clientForm');
+
+        function renderClients() {
+            grid.innerHTML = '';
+            State.data.clients.forEach(client => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-toco card-shadow flex justify-between items-center fade-in border border-transparent hover:border-primary/20 transition-all';
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold text-lg">
+                            ${client.name.charAt(0)}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-text-main">${client.name}</h3>
+                            <p class="text-xs text-text-sec">${client.zone}</p>
+                            <p class="text-[10px] font-bold text-secondary uppercase tracking-wider mt-1">${client.totalSales} unidades compradas</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editClient(${client.id})" class="p-2 text-text-sec hover:text-primary transition-colors">
+                            <i data-lucide="edit-2" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="deleteClient(${client.id})" class="p-2 text-text-sec hover:text-error transition-colors">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function openModal(id = null) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            if (id) {
+                const client = State.data.clients.find(c => c.id === id);
+                document.getElementById('modalTitle').textContent = 'Editar Comercio';
+                document.getElementById('clientId').value = client.id;
+                document.getElementById('clientName').value = client.name;
+                document.getElementById('clientZone').value = client.zone;
+            } else {
+                document.getElementById('modalTitle').textContent = 'Nuevo Comercio';
+                form.reset();
+                document.getElementById('clientId').value = '';
+            }
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function deleteClient(id) {
+            if (confirm('¿Estás seguro de eliminar este comercio? Se perderá su historial de ventas vinculado.')) {
+                await API.deleteClient(id);
+                renderClients();
+            }
+        }
+
+        function editClient(id) {
+            openModal(id);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('clientId').value;
+            const data = {
+                name: document.getElementById('clientName').value,
+                zone: document.getElementById('clientZone').value
+            };
+
+            if (id) {
+                await API.updateClient(Number(id), data);
+            } else {
+                await API.addClient(data);
+            }
+            
+            closeModal();
+            renderClients();
+        });
+
+        if (State.currentUser) renderClients();
+    </script>
+</body>
+</html>

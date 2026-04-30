@@ -1,0 +1,27 @@
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Base de Datos
+*.db
+*.db-journal
+
+# Archivos de Sistema / IDE
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Paquetes de despliegue (ZIPs)
+*.zip
+toco_proyecto.zip
+toco_update_final.zip
+
+# Logs
+logs
+*.log

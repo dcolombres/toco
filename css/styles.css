@@ -1,0 +1,92 @@
+/* Shared Styles for TOCO Gestión */
+:root {
+    --primary: #FB8500;
+    --secondary: #2A9D8F;
+    --surface: #F9F9F9;
+    --text-main: #2B2D42;
+    --text-sec: #6C757D;
+    --error: #E63946;
+}
+
+.font-title { font-family: 'Plus Jakarta Sans', sans-serif; }
+.font-body { font-family: 'Inter', sans-serif; }
+
+.card-shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.bottom-nav-item.active {
+    color: var(--primary);
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom rounded corners */
+.rounded-toco { border-radius: 12px; }
+
+/* Button Components */
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(251, 133, 0, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(251, 133, 0, 0.3);
+    filter: brightness(1.05);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    filter: brightness(0.95);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--text-main);
+    border: 2px solid #E5E7EB;
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #F9FAFB;
+    border-color: #D1D5DB;
+}
+
+.btn-ghost {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+    opacity: 0.8;
+    transform: translateX(4px);
+}

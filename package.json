@@ -1,0 +1,21 @@
+{
+  "name": "toco-emprende",
+  "version": "1.0.0",
+  "description": "Sistema de gestión y landing page para TOCO Emprende",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "browser-sync start --server --files '*.html, css/*.css, js/*.js'",
+    "build:css": "tailwindcss -i ./css/input.css -o ./css/styles.css --minify",
+    "watch:css": "tailwindcss -i ./css/input.css -o ./css/styles.css --watch"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.0",
+    "tailwindcss": "^3.4.0"
+  }
+}

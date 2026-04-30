@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOCO Emprende - Generá tus primeros ingresos</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FB8500', // Naranja cálido
+                        secondary: '#2A9D8F', // Verde oscuro
+                        surface: '#F9F9F9', // Blanco roto
+                        'text-main': '#2B2D42', // Gris oscuro
+                        'text-sec': '#6C757D', // Gris medio
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        title: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'toco': '12px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons (Simple line icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .wood-pattern {
+            background-color: #f9f9f9;
+            background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+            background-opacity: 0.05;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-text-main font-sans overflow-x-hidden">
+
+    <!-- Header / Nav -->
+    <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <nav class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-title font-extrabold text-primary tracking-tight">TOCO <span
+                        class="text-text-main">Emprende</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 font-medium">
+                <a href="#como-funciona" class="hover:text-primary transition-colors">Cómo funciona</a>
+                <a href="#numeros" class="hover:text-primary transition-colors">Números</a>
+                <a href="#beneficios" class="hover:text-primary transition-colors">Por qué TOCO</a>
+                <a href="login.html"
+                    class="text-text-sec hover:text-primary transition-colors border-l pl-8 border-gray-200">Acceso
+                    Panel</a>
+                <a href="#registro"
+                    class="bg-primary text-white px-6 py-3 rounded-toco font-bold hover:shadow-lg hover:shadow-primary/20 transition-all">Quiero
+                    ser revendedor</a>
+            </div>
+
+            <!-- Mobile Menu Toggle (Simplified) -->
+            <button class="md:hidden p-2">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="pt-20">
+
+        <!-- SECCIÓN 1: HERO -->
+        <section class="relative overflow-hidden py-16 md:py-24 px-4">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <span
+                        class="inline-block bg-primary/10 text-primary font-bold px-4 py-1 rounded-full text-sm mb-6 tracking-wide uppercase">Primer
+                        ingreso sin riesgos</span>
+                    <h1 class="text-4xl md:text-6xl font-title font-extrabold leading-tight mb-6">
+                        Vendé TOCO. <br><span class="text-primary">Ganá hasta $4.000</span> por unidad.
+                    </h1>
+                    <p class="text-lg md:text-xl text-text-sec mb-8 leading-relaxed">
+                        Comprás a $1.000. Se vende a $5.000. <br class="hidden md:block">
+                        <strong>Pagás solo cuando vendés.</strong> Sin riesgo. Sin experiencia previa.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <a href="#registro"
+                            class="bg-primary text-white px-8 py-4 rounded-toco font-bold text-lg text-center hover:scale-[1.02] transition-transform shadow-lg shadow-primary/30 flex items-center justify-center gap-2">
+                            Quiero ser revendedor <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#como-funciona"
+                            class="bg-white border-2 border-gray-200 text-text-main px-8 py-4 rounded-toco font-bold text-lg text-center hover:bg-gray-50 transition-colors">
+                            Cómo funciona
+                        </a>
+                    </div>
+                    <p class="text-sm text-text-sec italic flex items-center gap-2">
+                        <span class="flex -space-x-2">
+                            <img src="https://i.pravatar.cc/100?u=1" class="w-6 h-6 rounded-full border-2 border-white"
+                                alt="">
+                            <img src="https://i.pravatar.cc/100?u=2" class="w-6 h-6 rounded-full border-2 border-white"
+                                alt="">
+                            <img src="https://i.pravatar.cc/100?u=3" class="w-6 h-6 rounded-full border-2 border-white"
+                                alt="">
+                        </span>
+                        *Unite a +50 jóvenes que ya están generando sus primeros ingresos*
+                    </p>
+                </div>
+
+                <div class="relative fade-in">
+                    <div
+                        class="rounded-3xl overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <!-- Placeholder for Hero Image: Joven con TOCO -->
+                        <img src="https://toco.moroarte.com/public/emprendedor01.png" alt="Joven emprendedor"
+                            class="w-full h-[500px] object-cover">
+                    </div>
+                    <!-- Tactile Accent -->
+                    <div
+                        class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hidden sm:block">
+                        <p class="text-secondary font-bold text-2xl">+$280.000</p>
+                        <p class="text-sm text-text-sec">Ganancia semanal posible y REAL</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: CÓMO FUNCIONA -->
+        <section id="como-funciona" class="py-20 px-4 bg-white wood-pattern">
+            <div class="max-w-7xl mx-auto text-center mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-title font-extrabold mb-4">Empezar es más fácil que tocar madera
+                </h2>
+                <p class="text-text-sec text-lg max-w-2xl mx-auto">Tres pasos. Cero riesgo. Resultados desde el día uno.
+                </p>
+            </div>
+
+            <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
+                <!-- Paso 1 -->
+                <div
+                    class="bg-surface p-8 rounded-toco border border-gray-100 hover:shadow-xl transition-shadow fade-in">
+                    <div class="w-14 h-14 bg-primary/10 text-primary flex items-center justify-center rounded-2xl mb-6">
+                        <i data-lucide="package" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-title font-bold mb-4 text-text-main">1. Elegí tu kit</h3>
+                    <p class="text-text-sec leading-relaxed">Arrancá con 10, 25 o 50 TOCOs. No pagás por adelantado. Te
+                        los entregamos en modalidad comodato.</p>
+                </div>
+
+                <!-- Paso 2 -->
+                <div
+                    class="bg-surface p-8 rounded-toco border border-gray-100 hover:shadow-xl transition-shadow fade-in">
+                    <div
+                        class="w-14 h-14 bg-secondary/10 text-secondary flex items-center justify-center rounded-2xl mb-6">
+                        <i data-lucide="store" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-title font-bold mb-4 text-text-main">2. Vendé a comercios</h3>
+                    <p class="text-text-sec leading-relaxed">Ofrecé TOCOs a kioscos, librerías, regalerías y bares.
+                        Precio sugerido: $5.000. Negociá los $4.000 de ganancia con cada local.</p>
+                </div>
+
+                <!-- Paso 3 -->
+                <div
+                    class="bg-surface p-8 rounded-toco border border-gray-100 hover:shadow-xl transition-shadow fade-in">
+                    <div class="w-14 h-14 bg-primary/10 text-primary flex items-center justify-center rounded-2xl mb-6">
+                        <i data-lucide="wallet" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-title font-bold mb-4 text-text-main">3. Pagá solo lo vendido</h3>
+                    <p class="text-text-sec leading-relaxed">Cada 15 días declarás tus ventas. Pagás $1.000 por cada
+                        TOCO vendido. Los no vendidos los devolvés sin cargo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: NÚMEROS QUE MOTIVAN -->
+        <section id="numeros" class="py-20 px-4 bg-surface">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-title font-extrabold text-center mb-16 fade-in">Con TOCO, la
+                    matemática es simple</h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-16">
+                    <div class="bg-white p-8 rounded-toco text-center shadow-sm fade-in">
+                        <p class="text-4xl font-title font-extrabold text-primary mb-2">$4.000</p>
+                        <p class="text-sm font-semibold text-text-sec uppercase tracking-wider">Ganancia / Unidad</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-toco text-center shadow-sm fade-in">
+                        <p class="text-4xl font-title font-extrabold text-secondary mb-2">0%</p>
+                        <p class="text-sm font-semibold text-text-sec uppercase tracking-wider">Riesgo Financiero</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-toco text-center shadow-sm fade-in">
+                        <p class="text-4xl font-title font-extrabold text-text-main mb-2">+50</p>
+                        <p class="text-sm font-semibold text-text-sec uppercase tracking-wider">Jóvenes Activos</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-toco text-center shadow-sm fade-in">
+                        <p class="text-4xl font-title font-extrabold text-secondary mb-2">24h</p>
+                        <p class="text-sm font-semibold text-text-sec uppercase tracking-wider">Soporte WhatsApp</p>
+                    </div>
+                </div>
+
+                <!-- Bloque de ejemplo concreto -->
+                <div class="bg-secondary text-white p-8 md:p-12 rounded-3xl relative overflow-hidden fade-in">
+                    <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div class="text-center md:text-left">
+                            <h3 class="text-2xl md:text-3xl font-title font-bold mb-4">Hacé la cuenta vos mismo</h3>
+                            <p class="text-white/80 text-lg max-w-xl">"Si vendés 10 TOCOs por día durante 7 dias,
+                                ganás <strong>$28.000</strong>. Cuantos más locales consigas, más vas a ganar."</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div
+                                class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center">
+                                <p class="text-sm uppercase tracking-widest mb-1 opacity-80">Potencial Semanal</p>
+                                <p class="text-5xl font-title font-extrabold">$280.000</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Suble background pattern -->
+                    <div class="absolute inset-0 opacity-10 pointer-events-none wood-pattern"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: POR QUÉ TOCO -->
+        <section id="beneficios" class="py-20 px-4 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-title font-extrabold text-center mb-16 fade-in">¿Por qué TOCO
+                    funciona?</h2>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="space-y-4 fade-in">
+                        <div class="text-3xl">🪵</div>
+                        <h4 class="text-xl font-bold font-title">Producto que se vende solo</h4>
+                        <p class="text-text-sec">Un amuleto de la suerte de madera reciclada. Precio bajo ($5.000 al
+                            público). A los comercios les encanta porque deja mucho margen.</p>
+                    </div>
+
+                    <div class="space-y-4 fade-in">
+                        <div class="text-3xl">💰</div>
+                        <h4 class="text-xl font-bold font-title">Margen alto para vos</h4>
+                        <p class="text-text-sec">Ganás $4.000 por TOCO. Con solo 5 ventas por día son $20.000. Con 10
+                            ventas son $40.000 por día.</p>
+                    </div>
+
+                    <div class="space-y-4 fade-in">
+                        <div class="text-3xl">🛡️</div>
+                        <h4 class="text-xl font-bold font-title">Sin riesgo financiero</h4>
+                        <p class="text-text-sec">No invertís nada. Los TOCOs son nuestros hasta que los vendés. Los que
+                            no se venden, los devolvés.</p>
+                    </div>
+
+                    <div class="space-y-4 fade-in">
+                        <div class="text-3xl">📱</div>
+                        <h4 class="text-xl font-bold font-title">Soporte y capacitación</h4>
+                        <p class="text-text-sec">Te damos speech de venta, entrenamiento, un sistema de gestión y
+                            respondemos dudas por
+                            WhatsApp. No estás solo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: FORMULARIO DE REGISTRO -->
+        <section id="registro" class="py-20 px-4 bg-surface relative overflow-hidden">
+            <div class="max-w-3xl mx-auto relative z-10">
+                <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-gray-100 fade-in">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl md:text-4xl font-title font-extrabold mb-4">¿Listo para tu primer ingreso?
+                        </h2>
+                        <p class="text-text-sec text-lg">Completá el formulario. Te contactamos en 24 horas para
+                            entregarte tu kit y activar tu cuenta.</p>
+                    </div>
+
+                    <form id="registrationForm" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-text-main uppercase tracking-wider">Nombre
+                                    completo</label>
+                                <input type="text" name="name" required placeholder="Juan Pérez"
+                                    class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-text-main uppercase tracking-wider">Teléfono /
+                                    WhatsApp</label>
+                                <input type="tel" name="phone" required placeholder="+54 9 11 ..."
+                                    class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-text-main uppercase tracking-wider">Correo
+                                    electrónico</label>
+                                <input type="email" name="email" required placeholder="juan@email.com"
+                                    class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-text-main uppercase tracking-wider">Edad</label>
+                                <select name="age" required
+                                    class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all bg-white">
+                                    <option value="18-21">18-21 años</option>
+                                    <option value="22-25">22-25 años</option>
+                                    <option value="26+">26+ años</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-text-main uppercase tracking-wider">Ciudad / Zona de
+                                venta</label>
+                            <input type="text" name="zone" required placeholder="Ej: Palermo, CABA"
+                                class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-text-main uppercase tracking-wider">Kit de
+                                    inicio</label>
+                                <select name="kit" required
+                                    class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all bg-white">
+                                    <option value="10">10 unidades</option>
+                                    <option value="25">25 unidades</option>
+                                    <option value="50">50 unidades</option>
+                                    <option value="recommend">Quiero que me recomienden</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-text-main uppercase tracking-wider">¿Cómo nos
+                                    conociste?</label>
+                                <select name="source" required
+                                    class="w-full px-4 py-3 rounded-toco border border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all bg-white">
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="WhatsApp">WhatsApp</option>
+                                    <option value="Recommendation">Me recomendaron</option>
+                                    <option value="Other">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-primary text-white py-4 rounded-toco font-bold text-xl hover:scale-[1.01] transition-transform shadow-lg shadow-primary/20">
+                            Enviar solicitud →
+                        </button>
+                        <p class="text-center text-xs text-text-sec mt-4">No hacemos spam. Solo un WhatsApp para
+                            coordinar tu entrega.</p>
+                    </form>
+
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="successMessage" class="hidden text-center py-12">
+                        <div
+                            class="w-20 h-20 bg-secondary/10 text-secondary flex items-center justify-center rounded-full mx-auto mb-6">
+                            <i data-lucide="check-circle" class="w-12 h-12"></i>
+                        </div>
+                        <h3 class="text-3xl font-title font-extrabold mb-4">¡Listo!</h3>
+                        <p class="text-text-sec text-lg">En las próximas 24 horas te escribimos por WhatsApp para
+                            coordinar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background element -->
+            <div
+                class="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2">
+            </div>
+            <div
+                class="absolute bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3">
+            </div>
+        </section>
+
+        <!-- FAQ SECTION (Optional but included per instructions) -->
+        <section class="py-20 px-4 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-title font-extrabold text-center mb-12 fade-in">Preguntas Frecuentes</h2>
+                <div class="space-y-6">
+                    <div class="border-b border-gray-100 pb-6 fade-in">
+                        <h4 class="font-bold text-lg mb-2">¿Necesito experiencia en ventas?</h4>
+                        <p class="text-text-sec">No. Te damos el speech y entrenamiento básico para que sepas
+                            exactamente qué decir.</p>
+                    </div>
+                    <div class="border-b border-gray-100 pb-6 fade-in">
+                        <h4 class="font-bold text-lg mb-2">¿Puedo empezar con solo 10 TOCOs?</h4>
+                        <p class="text-text-sec">Sí. Eso es justo para que pruebes el modelo sin miedo y veas lo rápido
+                            que se venden.</p>
+                    </div>
+                    <div class="border-b border-gray-100 pb-6 fade-in">
+                        <h4 class="font-bold text-lg mb-2">¿Qué pasa si no vendo ningún TOCO?</h4>
+                        <p class="text-text-sec">Los devolvés. No pagás nada. El riesgo es 100% nuestro.</p>
+                    </div>
+                    <div class="border-b border-gray-100 pb-6 fade-in">
+                        <h4 class="font-bold text-lg mb-2">¿Dónde puedo vender?</h4>
+                        <p class="text-text-sec">Kioscos, librerías, regalerías, bares, peluquerías, locales de ropa,
+                            estaciones de servicio. ¡En cualquier lado con mostrador!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-text-main text-white py-16 px-4">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+            <div class="col-span-1 md:col-span-2">
+                <span class="text-2xl font-title font-extrabold text-primary tracking-tight mb-4 block">TOCO <span
+                        class="text-white">Emprende</span></span>
+                <p class="text-white/60 max-w-sm mb-6 leading-relaxed">
+                    Un programa diseñado para que los jóvenes argentinos generen sus primeros ingresos con un producto
+                    noble, sustentable y sin riesgos económicos.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#"
+                        class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#"
+                        class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h5 class="font-bold mb-6 uppercase tracking-widest text-sm text-primary">Navegación</h5>
+                <ul class="space-y-4 text-white/70">
+                    <li><a href="#como-funciona" class="hover:text-white transition-colors">Cómo funciona</a></li>
+                    <li><a href="#numeros" class="hover:text-white transition-colors">Números</a></li>
+                    <li><a href="#beneficios" class="hover:text-white transition-colors">Por qué TOCO</a></li>
+                    <li><a href="#registro" class="hover:text-white transition-colors">Registro</a></li>
+                    <li><a href="login.html" class="hover:text-white transition-colors font-bold text-primary">Acceso
+                            Panel Revendedores</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="font-bold mb-6 uppercase tracking-widest text-sm text-primary">Contacto</h5>
+                <ul class="space-y-4 text-white/70">
+                    <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i>
+                        contacto@tocoemprende.com.ar</li>
+                    <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +54 9 11 XXXX-XXXX
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto border-t border-white/10 mt-16 pt-8 text-center text-white/40 text-sm">
+            <p>© 2025 TOCO Emprende. Todos los derechos reservados. Hecho con madera y esfuerzo.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5491100000000?text=Hola,%20quiero%20ser%20revendedor%20TOCO" target="_blank"
+        class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-50 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"
+            class="w-8 h-8">
+            <path
+                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884 0 2.225.569 3.808 1.565 5.407l-.993 3.634 3.707-.973zm8.382-4.497c-.3-.149-1.747-.859-2.019-.958-.271-.1-.47-.149-.669.149-.198.297-.767.959-.94 1.158-.173.199-.347.223-.646.074-.3-.149-1.263-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+        </svg>
+    </a>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Scroll animations (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Form Submission Logic
+        const form = document.getElementById('registrationForm');
+        const successMsg = document.getElementById('successMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            console.log('Sending data:', data);
+
+            // Here you would connect to Google Sheets
+            // For now, we simulate the success state
+
+            form.style.display = 'none';
+            successMsg.classList.remove('hidden');
+
+            // Instructions for the user/developer:
+            /*
+            PARA CONECTAR CON GOOGLE SHEETS:
+            1. Creá un Google Sheet.
+            2. Andá a Extensiones > Apps Script.
+            3. Pegá este código:
+               
+               function doPost(e) {
+                 var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+                 var data = JSON.parse(e.postData.contents);
+                 sheet.appendRow([new Date(), data.name, data.email, data.phone, data.age, data.zone, data.kit, data.source]);
+                 return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+               }
+
+            4. Implementá como "Web App" (acceso: "Anyone").
+            5. Copiá la URL y reemplazá el fetch aquí abajo.
+            */
+
+            /*
+            try {
+                await fetch('TU_URL_DE_APPS_SCRIPT', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+            } catch (err) {
+                console.error('Error sending form:', err);
+            }
+            */
+        });
+    </script>
+</body>
+
+</html>

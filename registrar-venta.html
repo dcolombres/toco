@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Venta - TOCO Gestión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-surface font-body pb-24">
+
+    <!-- Header -->
+    <header class="bg-white px-6 py-6 border-b border-gray-100 flex items-center gap-4">
+        <a href="dashboard.html" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-sec hover:text-primary transition-colors">
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+        </a>
+        <h1 class="text-xl font-title font-extrabold text-text-main">Registrar nueva venta</h1>
+    </header>
+
+    <main class="p-6 max-w-2xl mx-auto">
+        <div class="bg-white p-6 rounded-toco card-shadow fade-in">
+            <form id="saleForm" class="space-y-6">
+                <!-- Commerce -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Seleccionar Comercio</label>
+                    <select id="commerce-select" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                        <option value="">-- Seleccioná un local --</option>
+                        <!-- Injected -->
+                    </select>
+                    <div class="text-[10px] text-text-sec px-1">
+                        ¿No aparece? <a href="comercios.html" class="text-primary font-bold">Gestionar mis comercios</a>
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Cantidad</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="quantity" required min="1" value="1" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Precio Unit.</label>
+                        <input type="number" id="price" required min="1000" value="5000" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                    </div>
+                </div>
+
+                <div class="text-xs text-text-sec">
+                    Stock disponible: <span id="current-stock" class="font-bold text-text-main">--</span> unidades
+                </div>
+
+                <!-- Date -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Fecha de venta</label>
+                    <input type="date" id="date" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all">
+                </div>
+
+                <!-- Live Summary -->
+                <div class="bg-surface p-4 rounded-toco space-y-2 border border-dashed border-gray-200">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-sec">Total Venta:</span>
+                        <span class="font-bold text-text-main" id="preview-total">$5.000</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-sec">Tu Ganancia:</span>
+                        <span class="font-bold text-secondary" id="preview-profit">+$4.000</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-sec">Costo TOCO (Deuda):</span>
+                        <span class="font-bold text-error" id="preview-debt">-$1.000</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary w-full">
+                    Registrar venta <i data-lucide="check" class="w-5 h-5"></i>
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Inicio</span>
+        </a>
+        <a href="registrar-venta.html" class="flex flex-col items-center gap-1 active text-primary">
+            <i data-lucide="plus-square" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Vender</span>
+        </a>
+        <a href="historial.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="list" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Historial</span>
+        </a>
+        <a href="estadisticas.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Stats</span>
+        </a>
+    </nav>
+
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        const reseller = State.getCurrentReseller();
+        if (!reseller) window.location.href = 'login.html';
+
+        // Setup Form
+        const commerceSelect = document.getElementById('commerce-select');
+        const quantityInput = document.getElementById('quantity');
+        const priceInput = document.getElementById('price');
+        const previewTotal = document.getElementById('preview-total');
+        const previewProfit = document.getElementById('preview-profit');
+        const previewDebt = document.getElementById('preview-debt');
+        const stockDisplay = document.getElementById('current-stock');
+        const dateInput = document.getElementById('date');
+
+        // Populate Commerce Select
+        reseller.clients.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.name;
+            opt.textContent = `${c.name} (${c.zone})`;
+            commerceSelect.appendChild(opt);
+        });
+
+        // Set default date to today
+        dateInput.valueAsDate = new Date();
+        stockDisplay.textContent = reseller.stock;
+        quantityInput.max = reseller.stock;
+
+        function updatePreviews() {
+            const q = Number(quantityInput.value) || 0;
+            const p = Number(priceInput.value) || 0;
+            
+            const total = q * p;
+            const debt = q * TOCO_CONFIG.COST_PER_UNIT;
+            const profit = total - debt;
+
+            previewTotal.textContent = UI.formatCurrency(total);
+            previewProfit.textContent = `+${UI.formatCurrency(profit)}`;
+            previewDebt.textContent = `-${UI.formatCurrency(debt)}`;
+        }
+
+        quantityInput.addEventListener('input', updatePreviews);
+        priceInput.addEventListener('input', updatePreviews);
+
+        document.getElementById('saleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const q = Number(quantityInput.value);
+            const p = Number(priceInput.value);
+            const commerce = commerceSelect.value;
+            
+            if (!commerce) return alert('Por favor seleccioná un comercio');
+            if (q > reseller.stock) return alert('No tenés suficiente stock!');
+            if (p < TOCO_CONFIG.COST_PER_UNIT) return alert(`El precio de venta no puede ser menor al costo ($${TOCO_CONFIG.COST_PER_UNIT})`);
+
+            if (!confirm(`¿Confirmás la venta de ${q} TOCOs a ${commerce} por un total de ${UI.formatCurrency(q * p)}?`)) return;
+
+            try {
+                await State.registerSale({
+                    commerce: commerce,
+                    quantity: q,
+                    price: p,
+                    date: dateInput.value
+                });
+                alert('Venta registrada con éxito!');
+                window.location.href = 'dashboard.html';
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    </script>
+</body>
+</html>

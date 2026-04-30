@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#703800",
+                    "tertiary-fixed": "#cae6ff",
+                    "inverse-on-surface": "#ffede3",
+                    "primary-container": "#fb8500",
+                    "surface-container-highest": "#f4ded2",
+                    "surface-variant": "#f4ded2",
+                    "surface-tint": "#934b00",
+                    "primary-fixed-dim": "#ffb781",
+                    "secondary": "#006a60",
+                    "secondary-fixed": "#8cf5e4",
+                    "primary": "#934b00",
+                    "primary-fixed": "#ffdcc4",
+                    "on-secondary-container": "#007166",
+                    "surface-container-high": "#f9e4d7",
+                    "on-background": "#241912",
+                    "inverse-primary": "#ffb781",
+                    "on-primary-container": "#5d2e00",
+                    "surface": "#fff8f5",
+                    "outline-variant": "#dec1ae",
+                    "outline": "#8a7262",
+                    "secondary-container": "#8cf5e4",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#6fd8c8",
+                    "tertiary-fixed-dim": "#8dcdff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#006493",
+                    "surface-container": "#ffeadd",
+                    "background": "#fff8f5",
+                    "on-secondary-fixed": "#00201c",
+                    "tertiary-container": "#00aefc",
+                    "surface-bright": "#fff8f5",
+                    "on-tertiary-fixed": "#001e30",
+                    "on-tertiary-fixed-variant": "#004b70",
+                    "on-surface-variant": "#574335",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#3a2e25",
+                    "on-surface": "#241912",
+                    "on-tertiary-container": "#003e5e",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#301400",
+                    "surface-container-low": "#fff1e9",
+                    "surface-dim": "#ebd6c9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "container-margin": "20px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "sm": "12px",
+                    "xs": "8px"
+            },
+            "fontFamily": {
+                    "h3": ["Plus Jakarta Sans"],
+                    "label-caps": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>body {
+    background-color: #F9F9F9;
+    font-family: "Inter", sans-serif;
+    -webkit-tap-highlight-color: transparent
+    }
+.wood-texture-subtle {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuAxFfaFl_pFMo0FpVqQOyxk-vgewBAisqZ-1GnFnhoJwvk8eLpWj6wVFNbeH-gkNkfVUeglI0RGfwYp4TluA87X3eBH-u5xbtcqlc9mevUzO-vhwtwGqCCjNglbRmfEynk2yIt_Jr492AZ3f2StbDJ7WSKGLegldGvdU1cIMu4gH_czVXkxA5jQz1cGVLcqOtJG3xHlb9iw-PoW17440kZRpz0vVrIvpaPl-bbkdZEKSWozm717IvfJxesD8vTL6R-eisaKvKUfpDA);
+    background-size: cover;
+    background-blend-mode: overlay
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-40 bg-[#F9F9F9] dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center w-full px-4 h-16 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="p-2 transition-all duration-200 active:scale-95 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">menu</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[#FB8500] dark:text-[#FB8500]">
+                    TOCO Emprende
+                </h1>
+</div>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 border-2 border-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="A high-quality portrait of a young entrepreneur in a modern, brightly lit office environment. The lighting is soft and natural, emphasizing a professional yet approachable personality. The background features blurred architectural elements, maintaining a clean light-mode aesthetic consistent with a premium financial and educational platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAwMhbheQzdEiQufvZzdfs7m6ncN9S1QZHTrfl_NNOSvU8I9qBjp28NfFHhV5UFgYizfRbRcCCKlg6IoYnvjxcISWxjVoMpejXENks9GBbHb-DXdFGXpN3K9OkE4q8_bEh_Vm3ePa5vNJ5iS4ao3MS3la_L91hcjJHTD7pTyHrJzGGjeTgU_BXb9iLmMFl1twIZHDil5uGnMGTqA_zWytw66Ei4o98JON06U7eD7_Ea4-v-vhig33us9SN_ZXrC0CQRTIFsb5gl04"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-32 px-4 max-w-2xl mx-auto min-h-screen">
+<!-- Page Header -->
+<div class="mb-lg space-y-xs">
+<h2 class="font-h1 text-h1 text-on-surface">Nueva Venta</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Registra los detalles de tu distribución de TOCOs.</p>
+</div>
+<!-- Form Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(43,45,66,0.08)] p-md space-y-lg border border-outline-variant/30 overflow-hidden relative">
+<!-- Subtle Accent Header -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary-container"></div>
+<form class="space-y-lg">
+<!-- Commerce Name -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block px-1">NOMBRE DEL COMERCIO</label>
+<div class="relative">
+<input class="w-full h-14 px-md rounded-xl border border-outline/30 focus:border-2 focus:border-primary-container focus:ring-0 transition-all font-body-md bg-white" placeholder="Ej: Panadería El Sol" type="text"/>
+</div>
+</div>
+<!-- Quantity and Date Group -->
+<div class="grid grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block px-1">CANTIDAD TOCOS</label>
+<input class="w-full h-14 px-md rounded-xl border border-outline/30 focus:border-2 focus:border-primary-container focus:ring-0 transition-all font-body-md bg-white" min="1" type="number" value="1"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block px-1">FECHA</label>
+<input class="w-full h-14 px-md rounded-xl border border-outline/30 focus:border-2 focus:border-primary-container focus:ring-0 transition-all font-body-md bg-white" type="date"/>
+</div>
+</div>
+<!-- Fixed Price Display -->
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/20 flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PRECIO UNITARIO</span>
+<span class="font-h3 text-h3 text-on-surface-variant">$5.000</span>
+</div>
+<span class="material-symbols-outlined text-outline/50">lock</span>
+</div>
+<!-- Checkbox -->
+<label class="flex items-center gap-md p-md rounded-xl bg-secondary-container/10 border border-secondary/10 cursor-pointer select-none">
+<div class="relative flex items-center">
+<input class="w-6 h-6 rounded border-secondary text-secondary focus:ring-secondary/20 transition-all cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md font-semibold text-on-secondary-fixed-variant">¿Recibiste el pago?</span>
+<span class="font-body-sm text-on-surface-variant text-[12px]">Marcar si la venta fue cobrada en el momento</span>
+</div>
+</label>
+<!-- Calculations Summary - Bento Style -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md pt-md border-t border-outline-variant/30">
+<div class="bg-surface p-md rounded-xl border border-outline-variant/20 flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SUBTOTAL VENTA</span>
+<span class="font-h2 text-h2 text-on-surface">$5.000</span>
+</div>
+<div class="space-y-md">
+<div class="bg-secondary-container/20 p-md rounded-xl border border-secondary/10 flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-secondary">MIS GANANCIAS</span>
+<span class="font-body-lg font-bold text-secondary-fixed-variant">$4.000</span>
+</div>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+<div class="bg-error-container/20 p-md rounded-xl border border-error/10 flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-caps text-[10px] text-error">DEUDA GENERADA</span>
+<span class="font-body-lg font-bold text-on-error-container">$1.000</span>
+</div>
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-sm pt-md">
+<button class="w-full h-14 bg-primary-container text-white font-bold text-body-lg rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-xs" type="submit">
+                        Registrar venta
+                    </button>
+<button class="w-full h-14 bg-transparent border-2 border-secondary text-secondary font-bold text-body-lg rounded-xl transition-all active:scale-95 flex items-center justify-center" type="button">
+                        Cancelar
+                    </button>
+</div>
+</form>
+</div>
+<!-- Extra context card for trust -->
+<div class="mt-lg p-md rounded-xl wood-texture-subtle border border-outline-variant/20 flex gap-md items-start">
+<span class="material-symbols-outlined text-primary mt-1">verified_user</span>
+<div class="space-y-1">
+<p class="font-body-sm font-semibold text-on-surface">Transacción Asegurada</p>
+<p class="font-body-sm text-on-surface-variant">Todas las ventas registradas impactan automáticamente en tu balance mensual de TOCO Emprende.</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(43,45,66,0.08)] flex justify-around items-center px-4 py-3 pb-safe">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 transition-transform duration-300 ease-out active:scale-90 hover:text-[#2A9D8F]" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Home</span>
+</a>
+<!-- Sale (Active) -->
+<a class="flex flex-col items-center justify-center text-[#FB8500] dark:text-[#FB8500] bg-[#FB8500]/10 rounded-2xl px-4 py-1 transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Sale</span>
+</a>
+<!-- History -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 transition-transform duration-300 ease-out active:scale-90 hover:text-[#2A9D8F]" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">History</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 transition-transform duration-300 ease-out active:scale-90 hover:text-[#2A9D8F]" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

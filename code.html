@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TOCO Emprende - Vendé y Ganá</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#fff8f5",
+                        "surface-dim": "#ebd6c9",
+                        "on-tertiary-fixed-variant": "#004b70",
+                        "surface-container-high": "#f9e4d7",
+                        "secondary": "#006a60",
+                        "tertiary-fixed": "#cae6ff",
+                        "surface-bright": "#fff8f5",
+                        "inverse-on-surface": "#ffede3",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#006493",
+                        "on-secondary-fixed": "#00201c",
+                        "surface-tint": "#934b00",
+                        "on-surface-variant": "#574335",
+                        "primary-fixed-dim": "#ffb781",
+                        "outline-variant": "#dec1ae",
+                        "on-primary-container": "#5d2e00",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#8cf5e4",
+                        "primary-fixed": "#ffdcc4",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#f4ded2",
+                        "inverse-primary": "#ffb781",
+                        "on-background": "#241912",
+                        "background": "#fff8f5",
+                        "surface-container": "#ffeadd",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#6fd8c8",
+                        "primary-container": "#fb8500",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#8dcdff",
+                        "outline": "#8a7262",
+                        "inverse-surface": "#3a2e25",
+                        "on-tertiary-container": "#003e5e",
+                        "surface-container-highest": "#f4ded2",
+                        "surface-container-low": "#fff1e9",
+                        "on-surface": "#241912",
+                        "on-secondary-container": "#007166",
+                        "on-primary-fixed": "#301400",
+                        "on-tertiary-fixed": "#001e30",
+                        "on-secondary-fixed-variant": "#005048",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#00aefc",
+                        "primary": "#934b00",
+                        "on-primary-fixed-variant": "#703800",
+                        "secondary-fixed": "#8cf5e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "container-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Plus Jakarta Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "h3": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h3": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>html {
+    scroll-behavior: smooth
+    }
+.wood-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCUzx_efGBczy5-oLlc6Xp8-m8weVG7lGIvdpxvmzRPTnAtsnOGevA3OSlDwm-J1GdfxyerTcsEnvwcaRkZO6eniIbU1Cjhw5xZl71ItKe2_Qvmj0HpHhYt0giJDEVbkzoyKBZX67hnFi9f-vYNZ-xwBw3erea3yE48-sa5QhdnCgu4LJSx8Ya72tqLFo005d7paAVqhBRlHDL_aETzOSeFbOIODHK0qliJxwkzNCSg2Itz3Udlo6MRYMHXKnxzNpwKDLa_7CodYa4);
+    background-blend-mode: overlay
+    }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.soft-shadow {
+    box-shadow: 0 4px 20px rgba(43, 45, 66, 0.08)
+    }</style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
+<!-- Header Section -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<a class="text-2xl font-black text-orange-600 dark:text-orange-500 font-h1" href="#">TOCO Emprende</a>
+<div class="hidden md:flex items-center gap-xl">
+<a class="font-['Plus_Jakarta_Sans'] font-bold text-sm tracking-tight text-slate-600 hover:text-orange-500 transition-opacity" href="#como-funciona">Cómo funciona</a>
+<a class="font-['Plus_Jakarta_Sans'] font-bold text-sm tracking-tight text-slate-600 hover:text-orange-500 transition-opacity" href="#ganancias">Ganancias</a>
+<a class="font-['Plus_Jakarta_Sans'] font-bold text-sm tracking-tight text-slate-600 hover:text-orange-500 transition-opacity" href="#beneficios">Beneficios</a>
+<a class="bg-primary-container text-white px-lg py-sm rounded-xl font-bold hover:opacity-80 transition-transform active:scale-95" href="#registro">Registrarse</a>
+</div>
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="pt-32 pb-xl px-6 md:px-0">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-xl">
+<div class="flex-1 space-y-lg">
+<span class="inline-block bg-secondary/10 text-secondary px-md py-xs rounded-full font-label-caps uppercase">Sin Inversión Inicial</span>
+<h1 class="font-h1 text-h1 md:text-5xl lg:text-6xl text-on-surface leading-tight">
+                    Vendé TOCO. Ganá <span class="text-primary-container">$4.000</span> por unidad.
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                    Comprás a $1.000. Vendés a $5.000. Pagás solo lo que vendés. Sin riesgo. Sin experiencia previa.
+                </p>
+<div class="flex flex-col sm:flex-row gap-md">
+<a class="bg-primary-container text-white px-lg py-md rounded-xl font-h3 text-center transition-transform active:scale-95 hover:opacity-90" href="#registro">
+                        Quiero ser revendedor →
+                    </a>
+<a class="border-2 border-secondary text-secondary px-lg py-md rounded-xl font-h3 text-center transition-transform active:scale-95 hover:bg-secondary/5" href="#como-funciona">
+                        Cómo funciona
+                    </a>
+</div>
+<div class="flex items-center gap-md pt-md">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-surface-dim border-2 border-white"></div>
+<div class="w-8 h-8 rounded-full bg-primary-fixed border-2 border-white"></div>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed border-2 border-white"></div>
+</div>
+<p class="font-body-sm italic text-on-surface-variant">
+                        *Unite a +50 jóvenes que ya están generando sus primeros ingresos*
+                    </p>
+</div>
+</div>
+<div class="flex-1 relative">
+<div class="w-full aspect-[4/5] rounded-[2rem] overflow-hidden soft-shadow bg-surface-dim">
+<img class="w-full h-full object-cover" data-alt="A cheerful young adult entrepreneur with a warm smile is holding a small, handcrafted light-wood cube against a bright, sun-drenched minimalist workspace. The lighting is high-key and natural, creating a soft and optimistic atmosphere that reflects a modern light-mode brand aesthetic. The scene is styled with vibrant orange accents and clean lines, emphasizing a sense of growth, youth-led ambition, and tactile quality. The overall mood is professional yet accessible and filled with positive energy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_5nxtD01WEALIr5cuwBnUvSKJ0veCfwrqRTO7yoyy9Do9CdtlXtQadBCw3gY5CSgXl3crKeIEA1iBrGuJsyz6IJyDbZytgnIVfRhGxhTsYh20MGnlu2neQPso0VszzB1PoB6IPNo1vjtCctRya9YH91UKJUnc3p87iRaK_TA6Y_ELj4U4KcDSW06j4dHxbb314T_Itvlegxx2lhuun-ZHarpACsXSFPmRk5gauOVw3IW7k9Mqqn9cWVFD11VcamxAjMzmFg986oM"/>
+</div>
+<div class="absolute -bottom-6 -left-6 bg-white p-lg rounded-xl soft-shadow border border-surface-dim">
+<p class="font-h2 text-primary">+$280.000/semanales</p>
+<p class="font-body-sm text-on-surface-variant">Ganancia potencial estimada</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Cómo funciona -->
+<section class="py-xl px-6 bg-surface-container-low wood-texture/5" id="como-funciona">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-h1 text-h1 text-on-surface mb-md">Empezar es más fácil que tocar madera</h2>
+<div class="w-24 h-1.5 bg-primary-container mx-auto rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Step 1 -->
+<div class="bg-white p-lg rounded-xl soft-shadow border border-transparent hover:border-primary/20 transition-all">
+<div class="w-12 h-12 bg-primary-fixed flex items-center justify-center rounded-lg mb-md text-primary">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<h3 class="font-h3 text-h3 mb-sm">Elegí tu kit</h3>
+<p class="font-body-md text-on-surface-variant">Arrancá con 10, 25 o 50 TOCOs. Entregamos en comodato para que no gastes un peso.</p>
+</div>
+<!-- Step 2 -->
+<div class="bg-white p-lg rounded-xl soft-shadow border border-transparent hover:border-primary/20 transition-all">
+<div class="w-12 h-12 bg-secondary-container flex items-center justify-center rounded-lg mb-md text-secondary">
+<span class="material-symbols-outlined">storefront</span>
+</div>
+<h3 class="font-h3 text-h3 mb-sm">Vendé a comercios</h3>
+<p class="font-body-md text-on-surface-variant">Precio sugerido $5.000 por unidad. Te quedás con $4.000 de ganancia inmediata por cada uno.</p>
+</div>
+<!-- Step 3 -->
+<div class="bg-white p-lg rounded-xl soft-shadow border border-transparent hover:border-primary/20 transition-all">
+<div class="w-12 h-12 bg-tertiary-fixed flex items-center justify-center rounded-lg mb-md text-tertiary">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<h3 class="font-h3 text-h3 mb-sm">Pagá solo lo vendido</h3>
+<p class="font-body-md text-on-surface-variant">Declarás ventas cada 15 días. Lo que no vendiste, se devuelve. Cero riesgo financiero.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Números que motivan -->
+<section class="py-xl px-6" id="ganancias">
+<div class="max-w-7xl mx-auto">
+<h2 class="font-h1 text-h1 text-center mb-xl">Con TOCO, la matemática es simple</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md mb-xl">
+<div class="bg-white p-md rounded-xl text-center border border-surface-dim soft-shadow">
+<p class="font-h1 text-primary-container">$4.000</p>
+<p class="font-label-caps text-on-surface-variant">Ganancia / Unidad</p>
+</div>
+<div class="bg-white p-md rounded-xl text-center border border-surface-dim soft-shadow">
+<p class="font-h1 text-secondary">0%</p>
+<p class="font-label-caps text-on-surface-variant">Riesgo Total</p>
+</div>
+<div class="bg-white p-md rounded-xl text-center border border-surface-dim soft-shadow">
+<p class="font-h1 text-tertiary">+50</p>
+<p class="font-label-caps text-on-surface-variant">Jóvenes Emprendiendo</p>
+</div>
+<div class="bg-white p-md rounded-xl text-center border border-surface-dim soft-shadow">
+<p class="font-h1 text-orange-400">24h</p>
+<p class="font-label-caps text-on-surface-variant">Soporte WhatsApp</p>
+</div>
+</div>
+<div class="bg-primary text-white p-xl rounded-[2rem] wood-texture relative overflow-hidden">
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-lg text-center md:text-left">
+<div>
+<h3 class="font-h2 text-h2 mb-sm text-white">Tu objetivo para arrancar</h3>
+<p class="font-body-lg text-primary-fixed max-w-xl">Si vendés solo 10 TOCOs por día durante una semana...</p>
+</div>
+<div class="text-center bg-white/10 backdrop-blur-md p-lg rounded-xl border border-white/20">
+<p class="font-body-sm uppercase tracking-widest text-primary-fixed">Ganás semanalmente</p>
+<p class="text-5xl font-black">$280.000</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Por qué TOCO -->
+<section class="py-xl px-6 bg-surface-container-highest/30" id="beneficios">
+<div class="max-w-7xl mx-auto">
+<h2 class="font-h1 text-h1 text-center mb-xl">¿Por qué TOCO funciona?</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<div class="bg-white p-lg rounded-xl soft-shadow flex flex-col gap-sm">
+<span class="material-symbols-outlined text-secondary text-4xl">verified</span>
+<h4 class="font-h3 text-h3">El producto se vende solo</h4>
+<p class="font-body-sm text-on-surface-variant">Diseño minimalista en madera natural que atrae todas las miradas en cualquier mostrador.</p>
+</div>
+<div class="bg-white p-lg rounded-xl soft-shadow flex flex-col gap-sm">
+<span class="material-symbols-outlined text-primary text-4xl">trending_up</span>
+<h4 class="font-h3 text-h3">Margen imbatible</h4>
+<p class="font-body-sm text-on-surface-variant">No existe en el mercado un producto con 400% de retorno sobre el costo de venta.</p>
+</div>
+<div class="bg-white p-lg rounded-xl soft-shadow flex flex-col gap-sm">
+<span class="material-symbols-outlined text-tertiary text-4xl">shield</span>
+<h4 class="font-h3 text-h3">Sin riesgo financiero</h4>
+<p class="font-body-sm text-on-surface-variant">Retirás el kit sin pagar. Solo abonás el costo de lo que ya cobraste al cliente.</p>
+</div>
+<div class="bg-white p-lg rounded-xl soft-shadow flex flex-col gap-sm">
+<span class="material-symbols-outlined text-orange-400 text-4xl">school</span>
+<h4 class="font-h3 text-h3">Capacitación constante</h4>
+<p class="font-body-sm text-on-surface-variant">Te enseñamos cómo abordar comercios y cerrar ventas efectivas en menos de 5 minutos.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Formulario de Registro -->
+<section class="py-xl px-6" id="registro">
+<div class="max-w-3xl mx-auto">
+<div class="bg-white rounded-[2rem] p-lg md:p-xl soft-shadow border border-surface-dim">
+<div class="text-center mb-lg">
+<h2 class="font-h1 text-h1 text-on-surface">¿Listo para tu primer ingreso?</h2>
+<p class="font-body-md text-on-surface-variant mt-sm">Completá el formulario y nos contactamos en menos de 24 horas.</p>
+</div>
+<form class="space-y-md">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">Nombre completo</label>
+<input class="w-full px-md py-sm rounded-xl border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 outline-none transition-all" placeholder="Ej: Juan Pérez" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">WhatsApp</label>
+<input class="w-full px-md py-sm rounded-xl border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 outline-none transition-all" placeholder="+54 9 11 ..." type="tel"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">Email</label>
+<input class="w-full px-md py-sm rounded-xl border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 outline-none transition-all" placeholder="hola@tusitio.com" type="email"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">Tu Edad</label>
+<select class="w-full px-md py-sm rounded-xl border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 outline-none transition-all">
+<option>18-21</option>
+<option>22-25</option>
+<option>26+</option>
+</select>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">Zona de residencia</label>
+<input class="w-full px-md py-sm rounded-xl border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 outline-none transition-all" placeholder="Ej: CABA / Zona Norte" type="text"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">¿Qué kit te gustaría arrancar?</label>
+<div class="grid grid-cols-3 gap-sm">
+<label class="cursor-pointer">
+<input class="hidden peer" name="kit" type="radio"/>
+<div class="p-sm text-center border-2 border-outline-variant rounded-xl peer-checked:border-secondary peer-checked:bg-secondary/5 font-bold transition-all">10 u.</div>
+</label>
+<label class="cursor-pointer">
+<input checked="" class="hidden peer" name="kit" type="radio"/>
+<div class="p-sm text-center border-2 border-outline-variant rounded-xl peer-checked:border-secondary peer-checked:bg-secondary/5 font-bold transition-all">25 u.</div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" name="kit" type="radio"/>
+<div class="p-sm text-center border-2 border-outline-variant rounded-xl peer-checked:border-secondary peer-checked:bg-secondary/5 font-bold transition-all">50 u.</div>
+</label>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-on-surface-variant">¿Cómo nos conociste?</label>
+<input class="w-full px-md py-sm rounded-xl border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 outline-none transition-all" placeholder="TikTok, Instagram, Amigo..." type="text"/>
+</div>
+<button class="w-full bg-primary-container text-white py-lg rounded-xl font-h3 mt-lg hover:opacity-90 active:scale-[0.98] transition-all" type="submit">
+                        Enviar solicitud de registro
+                    </button>
+</form>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full py-12 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="text-left">
+<span class="text-xl font-bold text-slate-900 dark:text-white block mb-2">TOCO Emprende</span>
+<p class="font-['Plus_Jakarta_Sans'] text-sm text-slate-500 dark:text-slate-400 max-w-xs">Empoderando a la próxima generación de emprendedores argentinos.</p>
+</div>
+<div class="flex gap-lg flex-wrap justify-center">
+<a class="text-slate-500 hover:text-orange-500 transition-colors text-sm" href="#">Privacidad</a>
+<a class="text-slate-500 hover:text-orange-500 transition-colors text-sm" href="#">Términos</a>
+<a class="text-slate-500 hover:text-orange-500 transition-colors text-sm" href="#">Contacto</a>
+<a class="text-orange-600 font-semibold hover:text-orange-500 transition-colors text-sm" href="https://wa.me/yournumber">WhatsApp</a>
+</div>
+<div class="text-center md:text-right">
+<p class="font-['Plus_Jakarta_Sans'] text-sm text-slate-500 dark:text-slate-400">© 2024 TOCO Emprende. Todos los derechos reservados.</p>
+<div class="flex gap-md justify-center md:justify-end mt-sm">
+<span class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors cursor-pointer">share</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors cursor-pointer">alternate_email</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- WhatsApp Floating Button -->
+<a class="fixed bottom-lg right-lg bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center soft-shadow hover:scale-110 active:scale-95 transition-transform z-50" href="https://wa.me/yournumber" target="_blank">
+<svg fill="currentColor" height="28" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.938 3.659 1.434 5.627 1.435h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+</a>
+</body></html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TOCO Gestión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-surface font-body pb-24" id="dashboard-view">
+
+    <!-- Header -->
+    <header class="bg-white px-6 py-6 border-b border-gray-100 flex justify-between items-center">
+        <div>
+            <p class="text-text-sec text-sm" id="current-date">Lunes, 15 de Mayo</p>
+            <h1 class="text-xl font-title font-extrabold text-text-main" id="welcome-msg">¡Hola, Juan!</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleNotifications()" class="relative w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-sec">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <span id="notif-badge" class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full hidden"></span>
+            </button>
+            <a href="index.html" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-sec hover:text-primary transition-colors" title="Volver a la web">
+                <i data-lucide="globe" class="w-5 h-5"></i>
+            </a>
+            <button onclick="State.logout()" class="w-10 h-10 bg-surface rounded-full flex items-center justify-center text-text-sec hover:text-error transition-colors" title="Cerrar sesión">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Notification Dropdown (Hidden) -->
+    <div id="notif-dropdown" class="fixed top-24 right-6 w-80 bg-white rounded-3xl shadow-2xl border border-gray-100 z-[100] hidden flex-col overflow-hidden">
+        <div class="p-4 border-b border-gray-50 flex justify-between items-center">
+            <h4 class="font-bold text-sm uppercase tracking-wider">Notificaciones</h4>
+            <button onclick="clearNotifications()" class="text-[10px] font-bold text-primary">Limpiar</button>
+        </div>
+        <div id="notif-list" class="max-h-60 overflow-y-auto">
+            <!-- Items injected -->
+        </div>
+    </div>
+
+    <main class="p-6 space-y-6 max-w-2xl mx-auto">
+        
+        <!-- Stock Card -->
+        <div class="bg-white p-6 rounded-toco card-shadow fade-in">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center rounded-xl">
+                    <i data-lucide="package" class="w-6 h-6"></i>
+                </div>
+                <p class="text-xs font-bold uppercase tracking-widest text-text-sec">Stock Disponible</p>
+            </div>
+            <div class="flex justify-between items-end">
+                <p class="text-4xl font-title font-extrabold text-text-main" id="stock-count">-- unidades</p>
+                <div class="flex flex-col items-end gap-2">
+                    <button onclick="openRequestModal()" class="btn-ghost">
+                        Solicitar más <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="toggleRequestsHistory()" class="text-[10px] font-bold text-text-sec hover:text-primary">Ver mis pedidos</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests History (Hidden by default) -->
+        <div id="req-history-section" class="hidden fade-in space-y-4">
+            <h3 class="font-title font-bold text-xs uppercase tracking-widest text-text-sec">Estado de mis pedidos</h3>
+            <div id="req-history-list" class="space-y-3">
+                <!-- Injected -->
+            </div>
+        </div>
+
+        <!-- Request Modal -->
+        <div id="requestModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl fade-in text-center">
+                <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="plus-circle" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-2xl font-title font-extrabold text-text-main mb-2">Solicitar Stock</h2>
+                <p class="text-text-sec text-sm mb-6">Indicá cuántos TOCOs necesitás. El admin aprobará tu pedido a la brevedad.</p>
+                
+                <div class="space-y-4">
+                    <input type="number" id="requestQuantity" value="25" min="1" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all text-center text-2xl font-bold">
+                    <div class="flex gap-4">
+                        <button onclick="closeRequestModal()" class="btn-secondary flex-1">Cancelar</button>
+                        <button onclick="submitRequest()" class="btn-primary flex-1">Solicitar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Earnings -->
+            <div class="bg-white p-6 rounded-toco card-shadow fade-in">
+                <div class="w-10 h-10 bg-secondary/10 text-secondary flex items-center justify-center rounded-xl mb-4">
+                    <i data-lucide="trending-up" class="w-6 h-6"></i>
+                </div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-text-sec mb-1">Ganancias</p>
+                <p class="text-xl font-title font-extrabold text-secondary" id="total-earnings">$0</p>
+            </div>
+
+            <!-- Debt -->
+            <div class="bg-white p-6 rounded-toco card-shadow fade-in">
+                <div class="w-10 h-10 bg-red-100 text-error flex items-center justify-center rounded-xl mb-4">
+                    <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                </div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-text-sec mb-1">Por pagar</p>
+                <p class="text-xl font-title font-extrabold text-error" id="total-debt">$0</p>
+            </div>
+        </div>
+
+        <!-- Debt Info -->
+        <div class="bg-surface border border-gray-100 p-4 rounded-toco flex items-center gap-3 fade-in">
+            <i data-lucide="info" class="w-5 h-5 text-text-sec"></i>
+            <p class="text-xs text-text-sec leading-tight" id="debt-count">Cargando información de deuda...</p>
+        </div>
+
+        <!-- Recent Sales -->
+        <div class="fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-title font-bold text-text-main uppercase tracking-widest text-xs">Últimas Ventas</h2>
+                <a href="historial.html" class="btn-ghost !text-xs">Ver todas</a>
+            </div>
+            <div class="bg-white rounded-toco card-shadow overflow-hidden" id="recent-sales">
+                <!-- List items will be injected by app.js -->
+                <div class="p-8 text-center text-text-sec text-sm italic">Cargando ventas...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center gap-1 active text-primary">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Inicio</span>
+        </a>
+        <a href="registrar-venta.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="plus-square" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Vender</span>
+        </a>
+        <a href="historial.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="list" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Historial</span>
+        </a>
+        <a href="estadisticas.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Stats</span>
+        </a>
+        <a href="perfil.html" class="flex flex-col items-center gap-1 text-text-sec">
+            <i data-lucide="user" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold uppercase">Perfil</span>
+        </a>
+    </nav>
+
+    <!-- FAB for New Sale (Mobile) -->
+    <a href="registrar-venta.html" class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/30 z-40 md:hidden">
+        <i data-lucide="plus" class="w-8 h-8"></i>
+    </a>
+
+    <script src="js/app.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        // Initialize Dashboard
+        if (State.currentUser) {
+            document.getElementById('welcome-msg').textContent = `¡Hola, ${State.currentUser.name}!`;
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+            UI.updateDashboard();
+        }
+
+        const reqModal = document.getElementById('requestModal');
+        const reqQty = document.getElementById('requestQuantity');
+
+        function openRequestModal() {
+            reqModal.classList.remove('hidden');
+            reqModal.classList.add('flex');
+        }
+
+        function closeRequestModal() {
+            reqModal.classList.add('hidden');
+            reqModal.classList.remove('flex');
+        }
+
+        async function submitRequest() {
+            const qty = Number(reqQty.value);
+            if (qty <= 0) return alert('Ingresá una cantidad válida');
+
+            await State.submitStockRequest(qty);
+            alert('Pedido enviado al admin correctamente.');
+            closeRequestModal();
+            renderRequestHistory();
+        }
+
+        // --- NOTIFICATIONS LOGIC ---
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notif-dropdown');
+            dropdown.classList.toggle('hidden');
+            dropdown.classList.toggle('flex');
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notif-list');
+            const badge = document.getElementById('notif-badge');
+            
+            // Ensure data structures exist
+            if (!State.data.notifications) State.data.notifications = [];
+            
+            const userNotifs = State.data.notifications.filter(n => n.userEmail === State.currentUser.email);
+            
+            const unread = userNotifs.filter(n => !n.read).length;
+            badge.classList.toggle('hidden', unread === 0);
+
+            list.innerHTML = '';
+            if (userNotifs.length === 0) {
+                list.innerHTML = '<div class="p-8 text-center text-xs text-text-sec italic">Sin notificaciones nuevas</div>';
+                return;
+            }
+
+            userNotifs.forEach(n => {
+                const item = document.createElement('div');
+                item.className = `p-4 border-b border-gray-50 text-xs transition-colors ${n.read ? 'opacity-60' : 'bg-primary/5 font-bold'}`;
+                item.innerHTML = `
+                    <p class="text-text-main mb-1">${n.message}</p>
+                    <p class="text-[10px] text-text-sec">${UI.formatDate(n.timestamp)}</p>
+                `;
+                list.appendChild(item);
+                n.read = true; // Mark as read when seen
+            });
+            State.save();
+        }
+
+        function clearNotifications() {
+            if (!State.data.notifications) return;
+            State.data.notifications = State.data.notifications.filter(n => n.userEmail !== State.currentUser.email);
+            State.save();
+            renderNotifications();
+        }
+
+        // --- REQUESTS HISTORY ---
+        function toggleRequestsHistory() {
+            const section = document.getElementById('req-history-section');
+            section.classList.toggle('hidden');
+            renderRequestHistory();
+        }
+
+        function renderRequestHistory() {
+            const list = document.getElementById('req-history-list');
+            
+            // Ensure data structures exist
+            if (!State.data.requests) State.data.requests = [];
+            
+            const myRequests = State.data.requests.filter(r => r.resellerId === State.currentUser.email);
+
+            list.innerHTML = '';
+            if (myRequests.length === 0) {
+                list.innerHTML = '<div class="p-4 bg-white rounded-xl text-center text-xs text-text-sec">Aún no realizaste pedidos</div>';
+                return;
+            }
+
+            myRequests.forEach(r => {
+                let statusClass = 'bg-gray-100 text-text-sec';
+                if (r.status === 'Aprobado') statusClass = 'bg-secondary/10 text-secondary';
+                if (r.status === 'Rechazado') statusClass = 'bg-red-50 text-error';
+
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-xl shadow-sm border border-gray-50 flex justify-between items-center';
+                card.innerHTML = `
+                    <div>
+                        <p class="text-sm font-bold text-text-main">${r.quantity} TOCOs</p>
+                        <p class="text-[10px] text-text-sec">${UI.formatDate(r.timestamp)}</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${statusClass}">${r.status}</span>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // Initial check for unread notifs
+        if (State.data.notifications) {
+            const unreadCount = State.data.notifications.filter(n => n.userEmail === State.currentUser.email && !n.read).length;
+            if (unreadCount > 0) document.getElementById('notif-badge').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
