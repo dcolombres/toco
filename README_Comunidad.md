@@ -25,8 +25,20 @@ Se agregaron dos tablas fundamentales en `server.js`:
 - **Modals:** Ventana emergente para la votación sin salir de la galería.
 - **Lucide Icons:** Uso de iconos para feedback visual de estrellas y categorías.
 
-## 🚀 Cómo agregar contenido
-Actualmente, las nuevas fotos se reciben vía WhatsApp y un administrador las carga en la base de datos a través del endpoint `/api/community/post` (o directamente en la DB para esta fase MVP).
+## 🚀 Cómo agregar contenido (Panel de Administrador)
+
+El sistema ahora cuenta con un módulo de subida directa de imágenes para el administrador. El flujo es el siguiente:
+
+1. **Recepción:** Los usuarios envían sus fotos y testimonios a través del botón de WhatsApp en la página de Comunidad.
+2. **Subida:** El administrador ingresa al panel en `admin.html` (credenciales por defecto: `admin@toco.com` / `admin123`).
+3. **Gestión:** En la pestaña **Gestión Comunidad**, el administrador hace clic en "Nueva Publicación".
+4. **Carga:** Se abre un formulario donde puede:
+   - Seleccionar el **archivo de imagen** directamente desde su computadora o celular (esto es procesado por el servidor usando la librería `multer` y guardado en `public/uploads/comunidad`).
+   - Ingresar el **nombre del Toker** (usuario).
+   - Escribir una breve **descripción** o testimonio.
+   - Marcar etiquetas de clasificación (**Idea Original** y/o **Muy Aesthetic**).
+5. **Publicación:** Al guardar, la imagen se sube automáticamente al servidor, se registra en la base de datos `toco.db` y queda visible instantáneamente en la galería pública de `comunidad.html`.
+6. **Eliminación:** Desde la misma pestaña "Gestión Comunidad", el administrador puede eliminar publicaciones si lo desea.
 
 ---
 *TOCO - Lo real se toca.*

@@ -390,8 +390,8 @@
             <h2 class="text-2xl font-title font-extrabold text-text-main mb-6">Nueva Publicación Comunidad</h2>
             <form id="communityForm" class="space-y-4">
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">URL de la Imagen</label>
-                    <input type="url" id="commImageUrl" required placeholder="https://..." class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Foto (Archivo)</label>
+                    <input type="file" id="commImageFile" accept="image/*" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Nombre del Toker</label>
@@ -507,23 +507,32 @@
 
         document.getElementById('communityForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const data = {
-                imageUrl: document.getElementById('commImageUrl').value,
-                userName: document.getElementById('commUserName').value,
-                description: document.getElementById('commDescription').value,
-                isOriginal: document.getElementById('commIsOriginal').checked ? 1 : 0,
-                isAesthetic: document.getElementById('commIsAesthetic').checked ? 1 : 0
-            };
+            
+            const formData = new FormData();
+            const fileInput = document.getElementById('commImageFile');
+            
+            if (fileInput.files.length > 0) {
+                formData.append('image', fileInput.files[0]);
+            } else {
+                return alert('Por favor, selecciona una imagen.');
+            }
+            
+            formData.append('userName', document.getElementById('commUserName').value);
+            formData.append('description', document.getElementById('commDescription').value);
+            formData.append('isOriginal', document.getElementById('commIsOriginal').checked ? 1 : 0);
+            formData.append('isAesthetic', document.getElementById('commIsAesthetic').checked ? 1 : 0);
             
             try {
                 const res = await fetch('/api/community/post', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
                 if (res.ok) {
                     closeCommunityModal();
                     renderCommunityGrid();
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + err.error);
                 }
             } catch (err) { console.error(err); }
         });

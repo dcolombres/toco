@@ -8,9 +8,28 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Configuración de multer para subida de archivos
+const uploadDir = path.join(__dirname, 'public', 'uploads', 'comunidad');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
 
 // Middlewares
 app.use(cors());
@@ -267,8 +286,21 @@ app.post('/api/community/vote', (req, res) => {
     });
 });
 
-app.post('/api/community/post', (req, res) => {
-    const { imageUrl, userName, description, isOriginal = 0, isAesthetic = 0 } = req.body;
+app.post('/api/community/post', upload.single('image'), (req, res) => {
+    // Si viene un archivo, usamos la ruta generada. Sino, usamos la imageUrl que pueda venir en el body (compatibilidad)
+    const imageUrl = req.file ? `public/uploads/comunidad/${req.file.filename}` : req.body.imageUrl;
+    
+    if (!imageUrl) {
+        return res.status(400).json({ error: 'Se requiere una imagen (archivo o URL)' });
+    }
+
+    const userName = req.body.userName;
+    const description = req.body.description;
+    
+    // Convertimos los checkboxes a booleanos/enteros
+    const isOriginal = (req.body.isOriginal === 'true' || req.body.isOriginal === '1' || req.body.isOriginal === 'on' || req.body.isOriginal === true) ? 1 : 0;
+    const isAesthetic = (req.body.isAesthetic === 'true' || req.body.isAesthetic === '1' || req.body.isAesthetic === 'on' || req.body.isAesthetic === true) ? 1 : 0;
+
     db.run('INSERT INTO community_posts (imageUrl, userName, description, isOriginal, isAesthetic) VALUES (?, ?, ?, ?, ?)', 
         [imageUrl, userName, description, isOriginal, isAesthetic], 
         function(err) {

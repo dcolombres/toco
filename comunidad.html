@@ -197,18 +197,17 @@
         let currentFilter = 'all';
 
         async function loadCommunity() {
-            // Simulated data
-            currentPosts = [
-                { id: 1, isOriginal: true, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1581783898377-1c85bf937427?auto=format&fit=crop&q=80&w=400', userName: 'MicaG', rating: 4.8, description: 'Lo uso de pisapapeles para los apuntes de la facu. ¡Queda genial en el escritorio!', voteCount: 156 },
-                { id: 2, isOriginal: false, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1544413647-b510493028e1?auto=format&fit=crop&q=80&w=400', userName: 'Juan_Pablo', rating: 4.5, description: 'Le puse un TOCO a cada pata de la cama para nivelarla. Increíble pero funciona jajaja.', voteCount: 89 },
-                { id: 3, isOriginal: true, isAesthetic: false, imageUrl: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=400', userName: 'Sofi_22', rating: 4.9, description: 'Mi perro Tobi decidió que el TOCO es su nuevo juguete favorito. Ya no me lo devuelve.', voteCount: 342 },
-                { id: 4, isOriginal: false, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&q=80&w=400', userName: 'Tomy_Zen', rating: 4.2, description: 'Tótem de meditación. Cuando el código no compila, lo miro fijo 5 minutos.', voteCount: 67 },
-                { id: 5, isOriginal: true, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1506784926709-22f1ec395907?auto=format&fit=crop&q=80&w=400', userName: 'Caro_Style', rating: 4.7, description: 'Posavasos aesthetic para el matcha de la tarde.', voteCount: 210 },
-                { id: 6, isOriginal: false, isAesthetic: false, imageUrl: 'https://images.unsplash.com/photo-1497215840905-a0f1246754b2?auto=format&fit=crop&q=80&w=400', userName: 'NicoBuilder', rating: 4.0, description: 'Con 4 TOCOs me armé un apoya notebook casero. No recalienta más.', voteCount: 45 },
-                { id: 7, isOriginal: true, isAesthetic: false, imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=400', userName: 'Lula_Art', rating: 4.9, description: 'Lo pinté a mano y ahora es parte de la deco del living.', voteCount: 405 },
-                { id: 8, isOriginal: false, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64dafc?auto=format&fit=crop&q=80&w=400', userName: 'Mati_B', rating: 4.6, description: 'Traba puerta oficial de mi depto para cuando hay corriente cruzada.', voteCount: 128 }
-            ];
-            applyFilter();
+            try {
+                const response = await fetch('/api/community');
+                if (response.ok) {
+                    currentPosts = await response.json();
+                    applyFilter();
+                } else {
+                    console.error('Error al cargar la comunidad');
+                }
+            } catch (err) {
+                console.error('Error de red al cargar la comunidad:', err);
+            }
         }
 
         function renderGallery(posts) {
@@ -316,15 +315,25 @@
 
             const rating = parseInt(ratingInput.value);
             
-            const postIndex = currentPosts.findIndex(p => p.id === selectedPostId);
-            if (postIndex !== -1) {
-                const post = currentPosts[postIndex];
-                const totalRating = (post.rating * post.voteCount) + rating;
-                post.voteCount++;
-                post.rating = totalRating / post.voteCount;
-                
-                closeVoteModal();
-                applyFilter();
+            try {
+                const response = await fetch('/api/community/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        postId: selectedPostId,
+                        rating: rating,
+                        userId: 'anon' // Podría ser una IP o ID local
+                    })
+                });
+
+                if (response.ok) {
+                    closeVoteModal();
+                    loadCommunity(); // Reload to show new rating
+                } else {
+                    console.error('Error al enviar el voto');
+                }
+            } catch (err) {
+                console.error('Error al votar:', err);
             }
         }
 
