@@ -31,12 +31,51 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS clients (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, name TEXT, zone TEXT, totalSales INTEGER DEFAULT 0)`);
     db.run(`CREATE TABLE IF NOT EXISTS master_stock (id INTEGER PRIMARY KEY CHECK (id = 1), quantity INTEGER DEFAULT 5000)`);
     db.run(`CREATE TABLE IF NOT EXISTS costs (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT, amount REAL)`);
+    
+    // Nueva tabla para Comunidad TOCO
+    db.run(`CREATE TABLE IF NOT EXISTS community_posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        imageUrl TEXT, 
+        userName TEXT, 
+        description TEXT, 
+        rating REAL DEFAULT 0, 
+        voteCount INTEGER DEFAULT 0,
+        isOriginal INTEGER DEFAULT 0,
+        isAesthetic INTEGER DEFAULT 0,
+        timestamp DATETIME DEFAULT (datetime('now','localtime'))
+    )`);
+
+    // Nueva tabla para Votos
+    db.run(`CREATE TABLE IF NOT EXISTS community_votes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        postId INTEGER,
+        rating INTEGER,
+        userId TEXT,
+        timestamp DATETIME DEFAULT (datetime('now','localtime')),
+        FOREIGN KEY(postId) REFERENCES community_posts(id)
+    )`);
+
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (1, 'Listones de madera', 'fijo', 0)`);
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (2, 'Aceite de Linaza', 'fijo', 0)`);
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (3, 'Packaging', 'fijo', 0)`);
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (4, 'Inversión Inicial', 'unico', 0)`);
     db.run(`INSERT OR IGNORE INTO master_stock (id, quantity) VALUES (1, 5000)`);
     db.run(`INSERT OR IGNORE INTO users (name, email, password, role) VALUES ('Admin Master', 'admin@toco.com', 'admin123', 'admin')`);
+
+    // Datos de ejemplo para la comunidad (solo si la tabla está vacía)
+    db.get("SELECT COUNT(*) as count FROM community_posts", (err, row) => {
+        if (row && row.count === 0) {
+            const samplePosts = [
+                ['https://images.unsplash.com/photo-1581783898377-1c85bf937427?auto=format&fit=crop&q=80&w=800', 'Santi', 'Mi TOCO como soporte de incienso en el estudio.', 4.8, 12, 0, 1],
+                ['https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800', 'Martina', 'Lo uso para que no se me vuelen los bocetos.', 4.5, 8, 1, 0],
+                ['https://images.unsplash.com/photo-1544413647-b510493028e1?auto=format&fit=crop&q=80&w=800', 'Lucas', 'Compañero de mates y oficina.', 4.9, 25, 0, 0],
+                ['https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&q=80&w=800', 'Elena', 'Intervención artística en mi TOCO.', 5.0, 15, 1, 1]
+            ];
+            samplePosts.forEach(post => {
+                db.run(`INSERT INTO community_posts (imageUrl, userName, description, rating, voteCount, isOriginal, isAesthetic) VALUES (?, ?, ?, ?, ?, ?, ?)`, post);
+            });
+        }
+    });
 });
 
 // --- API ENDPOINTS ---
@@ -54,11 +93,11 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Reseller Data
+// Toker Data
 app.get('/api/reseller/data/:userId', (req, res) => {
     const userId = req.params.userId;
     db.get('SELECT stock FROM users WHERE id = ?', [userId], (err, user) => {
-        if (!user) return res.status(404).json({ error: 'No user' });
+        if (!user) return res.status(404).json({ error: 'Toker no encontrado' });
         db.all('SELECT * FROM sales WHERE userId = ? ORDER BY timestamp DESC', [userId], (err, sales) => {
             db.all('SELECT * FROM clients WHERE userId = ?', [userId], (err, clients) => {
                 db.all('SELECT * FROM requests WHERE userId = ? ORDER BY timestamp DESC', [userId], (err, requests) => {
@@ -104,10 +143,9 @@ app.delete('/api/clients/:id', (req, res) => {
 // --- ADMIN ENDPOINTS ---
 
 app.get('/api/admin/resellers', (req, res) => {
-    db.all('SELECT id, name, email, stock FROM users WHERE role = "reseller"', [], (err, rows) => res.json(rows || []));
+    db.all('SELECT id, name, email, stock, referredBy FROM users WHERE role = "reseller"', [], (err, rows) => res.json(rows || []));
 });
 
-// Admin: All sales (with reseller name)
 app.get('/api/admin/sales', (req, res) => {
     db.all(`SELECT s.*, u.name as resellerName FROM sales s LEFT JOIN users u ON s.userId = u.id ORDER BY s.timestamp DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -115,7 +153,6 @@ app.get('/api/admin/sales', (req, res) => {
     });
 });
 
-// Admin: All requests (with reseller name)
 app.get('/api/admin/requests', (req, res) => {
     db.all(`SELECT r.*, u.name as resellerName FROM requests r LEFT JOIN users u ON r.userId = u.id ORDER BY r.timestamp DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -159,14 +196,6 @@ app.delete('/api/admin/resellers/:id', (req, res) => {
     });
 });
 
-app.get('/api/admin/sales', (req, res) => {
-    db.all(`SELECT s.*, u.name as userName FROM sales s JOIN users u ON s.userId = u.id ORDER BY s.timestamp DESC`, [], (err, rows) => res.json(rows || []));
-});
-
-app.get('/api/admin/requests', (req, res) => {
-    db.all(`SELECT r.*, u.name as resellerName FROM requests r JOIN users u ON r.userId = u.id ORDER BY r.timestamp DESC`, [], (err, rows) => res.json(rows || []));
-});
-
 app.post('/api/admin/approve-request', (req, res) => {
     const { requestId, userId, quantity } = req.body;
     db.serialize(() => {
@@ -181,7 +210,6 @@ app.post('/api/admin/reject-request', (req, res) => {
     db.run('UPDATE requests SET status = "Rechazado" WHERE id = ?', [requestId], () => res.json({ success: true }));
 });
 
-// Costs endpoints
 app.get('/api/admin/costs', (req, res) => {
     db.all('SELECT * FROM costs', [], (err, rows) => res.json(rows || []));
 });
@@ -213,9 +241,59 @@ app.post('/api/admin/master-stock', (req, res) => {
     }
 });
 
-// SERVIR ARCHIVOS ESTÁTICOS (DESPUÉS DE LAS RUTAS API)
+// --- COMMUNITY ENDPOINTS ---
+
+app.get('/api/community', (req, res) => {
+    db.all('SELECT * FROM community_posts ORDER BY timestamp DESC', [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows || []);
+    });
+});
+
+app.post('/api/community/vote', (req, res) => {
+    const { postId, rating, userId } = req.body;
+    if (rating < 0 || rating > 5) return res.status(400).json({ error: 'Rating debe ser entre 0 y 5' });
+
+    db.serialize(() => {
+        db.run('INSERT INTO community_votes (postId, rating, userId) VALUES (?, ?, ?)', [postId, rating, userId], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            db.get('SELECT AVG(rating) as avgRating, COUNT(*) as count FROM community_votes WHERE postId = ?', [postId], (err, row) => {
+                if (err) return res.status(500).json({ error: err.message });
+                db.run('UPDATE community_posts SET rating = ?, voteCount = ? WHERE id = ?', [row.avgRating, row.count, postId], () => {
+                    res.json({ success: true, newRating: row.avgRating, newCount: row.count });
+                });
+            });
+        });
+    });
+});
+
+app.post('/api/community/post', (req, res) => {
+    const { imageUrl, userName, description, isOriginal = 0, isAesthetic = 0 } = req.body;
+    db.run('INSERT INTO community_posts (imageUrl, userName, description, isOriginal, isAesthetic) VALUES (?, ?, ?, ?, ?)', 
+        [imageUrl, userName, description, isOriginal, isAesthetic], 
+        function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true, id: this.lastID });
+        }
+    );
+});
+
+app.delete('/api/community/post/:id', (req, res) => {
+    const id = req.params.id;
+    db.serialize(() => {
+        db.run('DELETE FROM community_votes WHERE postId = ?', [id]);
+        db.run('DELETE FROM community_posts WHERE id = ?', [id], function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true });
+        });
+    });
+});
+
+// SERVIR ARCHIVOS ESTÁTICOS
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use(express.static(__dirname));
 
 app.listen(PORT, () => console.log(`Server en http://localhost:${PORT}`));
+(PORT, () => console.log(`Server en http://localhost:${PORT}`));
+.log(`Server en http://localhost:${PORT}`));

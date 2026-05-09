@@ -1,7 +1,7 @@
 {
   "name": "toco-emprende",
   "version": "1.0.0",
-  "description": "Sistema de gestión y landing page para TOCO Emprende",
+  "description": "Sistema de gestión y landing page para TOCO",
   "main": "index.html",
   "scripts": {
     "start": "node server.js",

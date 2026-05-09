@@ -4,7 +4,7 @@
  */
 
 const TOCO_CONFIG = {
-    COST_PER_UNIT: 1000,
+    COST_PER_UNIT: 2500,
     PRICE_PER_UNIT: 5000,
     API_BASE: '/api'
 };

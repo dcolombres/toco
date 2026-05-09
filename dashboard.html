@@ -44,21 +44,30 @@
 
     <main class="p-6 space-y-6 max-w-2xl mx-auto">
         
-        <!-- Stock Card -->
-        <div class="bg-white p-6 rounded-toco card-shadow fade-in">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center rounded-xl">
-                    <i data-lucide="package" class="w-6 h-6"></i>
+        <!-- Dashboard Header -->
+        <div class="fade-in">
+            <h1 class="text-3xl font-title font-extrabold text-text-main" id="welcome-msg">¡Hola, Toker!</h1>
+            <p class="text-text-sec text-sm mt-1">Embajador de lo real · <span id="current-date">Cargando...</span></p>
+        </div>
+
+        <!-- Stock Status Card (Mission Stock) -->
+        <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 fade-in relative overflow-hidden group">
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none wood-pattern"></div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-primary/10 text-primary flex items-center justify-center rounded-xl">
+                        <i data-lucide="package" class="w-6 h-6"></i>
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-widest text-primary">Misión Stock</p>
                 </div>
-                <p class="text-xs font-bold uppercase tracking-widest text-text-sec">Stock Disponible</p>
-            </div>
-            <div class="flex justify-between items-end">
-                <p class="text-4xl font-title font-extrabold text-text-main" id="stock-count">-- unidades</p>
-                <div class="flex flex-col items-end gap-2">
-                    <button onclick="openRequestModal()" class="btn-ghost">
-                        Solicitar más <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
-                    <button onclick="toggleRequestsHistory()" class="text-[10px] font-bold text-text-sec hover:text-primary">Ver mis pedidos</button>
+                <div class="flex justify-between items-end">
+                    <p class="text-4xl font-title font-extrabold text-text-main" id="stock-count">-- unidades</p>
+                    <div class="flex flex-col items-end gap-2">
+                        <button onclick="openRequestModal()" class="btn-ghost !text-primary">
+                            Gestionar <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="toggleRequestsHistory()" class="text-[10px] font-bold text-text-sec hover:text-primary">Historial Misión</button>
+                    </div>
                 </div>
             </div>
         </div>

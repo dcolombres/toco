@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad TOCO - Inspiración</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FB8500',
+                        secondary: '#2A9D8F',
+                        surface: '#F9F9F9',
+                        'text-main': '#2B2D42',
+                        'text-sec': '#6C757D',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        title: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'toco': '12px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .wood-pattern {
+            background-color: #f9f9f9;
+            background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+        }
+
+        .star-rating {
+            direction: rtl;
+            display: inline-block;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ccc;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: color 0.2s;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #FB8500;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-text-main font-sans overflow-x-hidden">
+
+    <!-- Header / Nav -->
+    <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <nav class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="text-3xl font-title font-extrabold text-primary tracking-tighter">TOCO</a>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 font-medium">
+                <a href="index.html#quienes-somos" class="hover:text-primary transition-colors">Nosotros</a>
+                <a href="index.html#filosofia" class="hover:text-primary transition-colors">Filosofía</a>
+                <a href="index.html#utilidades" class="hover:text-primary transition-colors">Utilidades</a>
+                <a href="#" class="text-primary font-bold">Comunidad</a>
+                <a href="index.html#como-funciona" class="hover:text-primary transition-colors">Ser Toker</a>
+                <a href="login.html"
+                    class="text-text-sec hover:text-primary transition-colors border-l pl-8 border-gray-200">Acceso
+                    Panel</a>
+                <a href="index.html#registro"
+                    class="bg-primary text-white px-6 py-3 rounded-toco font-bold hover:shadow-lg hover:shadow-primary/20 transition-all">Quiero
+                    ser Toker</a>
+            </div>
+
+            <button class="md:hidden p-2">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="pt-20">
+
+        <!-- Hero Comunidad -->
+        <section class="relative py-16 px-4 bg-white wood-pattern">
+            <div class="max-w-7xl mx-auto text-center">
+                <span class="inline-block bg-primary/10 text-primary font-bold px-4 py-1 rounded-full text-sm mb-6 tracking-wide uppercase">Inspiración</span>
+                <h1 class="text-4xl md:text-6xl font-title font-extrabold leading-tight mb-6">
+                    Comunidad <span class="text-primary">TOCO</span>
+                </h1>
+                <p class="text-lg md:text-xl text-text-sec mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Mirá cómo la gente usa su TOCO, votá tus fotos favoritas y mandanos la tuya para aparecer en el ranking.
+                </p>
+                <div class="flex justify-center gap-4">
+                    <a href="https://wa.me/5491154949191?text=Hola!%20Quiero%20mandar%20una%20foto%20de%20mi%20TOCO." target="_blank"
+                        class="bg-primary text-white px-8 py-4 rounded-toco font-bold text-lg hover:scale-[1.02] transition-transform shadow-lg shadow-primary/30 flex items-center gap-2">
+                        Mandar mi foto <i data-lucide="camera" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros y Galería -->
+        <section class="py-12 px-4">
+            <div class="max-w-7xl mx-auto">
+                
+                <!-- Filtros -->
+                <div class="flex flex-wrap items-center justify-center gap-4 mb-12">
+                    <button onclick="filterGallery('all')" class="filter-btn active bg-primary text-white px-6 py-2 rounded-full font-bold shadow-md transition-all">Todas</button>
+                    <button onclick="filterGallery('top')" class="filter-btn bg-white border border-gray-200 text-text-sec px-6 py-2 rounded-full font-bold hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i> Más Votadas
+                    </button>
+                    <button onclick="filterGallery('original')" class="filter-btn bg-white border border-gray-200 text-text-sec px-6 py-2 rounded-full font-bold hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+                        <i data-lucide="lightbulb" class="w-4 h-4"></i> Las más Originales
+                    </button>
+                    <button onclick="filterGallery('aesthetic')" class="filter-btn bg-white border border-gray-200 text-text-sec px-6 py-2 rounded-full font-bold hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Las más Aesthetic
+                    </button>
+                </div>
+
+                <!-- Galería Grid -->
+                <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Items injected by JS -->
+                    <div class="col-span-full text-center py-20 italic text-text-sec">Cargando comunidad...</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal para Votar -->
+    <div id="voteModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl fade-in text-center">
+            <div id="modal-img" class="w-full h-48 rounded-2xl overflow-hidden mb-6">
+                <img src="" alt="" class="w-full h-full object-cover">
+            </div>
+            <h2 class="text-2xl font-title font-extrabold text-text-main mb-2">Puntuá esta idea</h2>
+            <p class="text-text-sec text-sm mb-6">¿Qué te parece el uso que le dio <span id="modal-user" class="font-bold text-primary"></span>?</p>
+            
+            <div class="star-rating mb-8">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="Excelente">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="Muy buena">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="Buena">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="Regular">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="Mala">★</label>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="closeVoteModal()" class="flex-1 px-6 py-3 border border-gray-200 rounded-xl font-bold text-text-sec hover:bg-gray-50 transition-all">Cerrar</button>
+                <button onclick="submitVote()" class="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">Votar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-text-main text-white py-12 px-4 mt-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <a href="index.html" class="text-3xl font-title font-extrabold text-primary tracking-tighter mb-4 block">TOCO</a>
+            <p class="text-white/40 text-sm">© 2025 TOCO. Comunidad Toker.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        let currentPosts = [];
+        let currentFilter = 'all';
+
+        async function loadCommunity() {
+            // Simulated data
+            currentPosts = [
+                { id: 1, isOriginal: true, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1581783898377-1c85bf937427?auto=format&fit=crop&q=80&w=400', userName: 'MicaG', rating: 4.8, description: 'Lo uso de pisapapeles para los apuntes de la facu. ¡Queda genial en el escritorio!', voteCount: 156 },
+                { id: 2, isOriginal: false, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1544413647-b510493028e1?auto=format&fit=crop&q=80&w=400', userName: 'Juan_Pablo', rating: 4.5, description: 'Le puse un TOCO a cada pata de la cama para nivelarla. Increíble pero funciona jajaja.', voteCount: 89 },
+                { id: 3, isOriginal: true, isAesthetic: false, imageUrl: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=400', userName: 'Sofi_22', rating: 4.9, description: 'Mi perro Tobi decidió que el TOCO es su nuevo juguete favorito. Ya no me lo devuelve.', voteCount: 342 },
+                { id: 4, isOriginal: false, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&q=80&w=400', userName: 'Tomy_Zen', rating: 4.2, description: 'Tótem de meditación. Cuando el código no compila, lo miro fijo 5 minutos.', voteCount: 67 },
+                { id: 5, isOriginal: true, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1506784926709-22f1ec395907?auto=format&fit=crop&q=80&w=400', userName: 'Caro_Style', rating: 4.7, description: 'Posavasos aesthetic para el matcha de la tarde.', voteCount: 210 },
+                { id: 6, isOriginal: false, isAesthetic: false, imageUrl: 'https://images.unsplash.com/photo-1497215840905-a0f1246754b2?auto=format&fit=crop&q=80&w=400', userName: 'NicoBuilder', rating: 4.0, description: 'Con 4 TOCOs me armé un apoya notebook casero. No recalienta más.', voteCount: 45 },
+                { id: 7, isOriginal: true, isAesthetic: false, imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=400', userName: 'Lula_Art', rating: 4.9, description: 'Lo pinté a mano y ahora es parte de la deco del living.', voteCount: 405 },
+                { id: 8, isOriginal: false, isAesthetic: true, imageUrl: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64dafc?auto=format&fit=crop&q=80&w=400', userName: 'Mati_B', rating: 4.6, description: 'Traba puerta oficial de mi depto para cuando hay corriente cruzada.', voteCount: 128 }
+            ];
+            applyFilter();
+        }
+
+        function renderGallery(posts) {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            if (posts.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-20 italic text-text-sec">No hay fotos todavía. ¡Sé el primero!</div>';
+                return;
+            }
+
+            posts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group fade-in visible border border-gray-100 flex flex-col';
+                
+                // Badges
+                let badges = '';
+                if (post.isOriginal) badges += `<span class="bg-secondary/90 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><i data-lucide="lightbulb" class="w-3 h-3"></i> Original</span>`;
+                if (post.isAesthetic) badges += `<span class="bg-primary/90 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Aesthetic</span>`;
+
+                card.innerHTML = `
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${post.imageUrl}" alt="Uso de TOCO" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 flex flex-col gap-2">
+                            ${badges}
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md p-3 rounded-2xl flex justify-between items-center translate-y-20 group-hover:translate-y-0 transition-transform duration-300">
+                             <div class="flex flex-col">
+                                <span class="text-[10px] uppercase tracking-wider font-bold text-text-sec">Mandada por</span>
+                                <span class="font-bold text-text-main">${post.userName}</span>
+                             </div>
+                             <div class="flex items-center gap-1 text-primary font-bold">
+                                <span>${post.rating.toFixed(1)}</span>
+                                <i data-lucide="star" class="w-4 h-4 fill-primary"></i>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <p class="text-text-sec text-sm italic mb-6 leading-relaxed flex-grow">"${post.description}"</p>
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                            <span class="text-xs font-bold text-text-sec uppercase tracking-widest">${post.voteCount} votos</span>
+                            <button onclick="openVoteModal(${post.id})" class="bg-primary/10 text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+                                <i data-lucide="star" class="w-4 h-4"></i> Puntuar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterGallery(type) {
+            currentFilter = type;
+            // Update active button
+            if(event) {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active', 'bg-primary', 'text-white');
+                    btn.classList.add('bg-white', 'text-text-sec', 'border-gray-200');
+                });
+                event.currentTarget.classList.add('active', 'bg-primary', 'text-white');
+                event.currentTarget.classList.remove('bg-white', 'text-text-sec', 'border-gray-200');
+            }
+
+            applyFilter();
+        }
+
+        function applyFilter() {
+            let filtered = [...currentPosts];
+            if (currentFilter === 'top') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            } else if (currentFilter === 'original') {
+                filtered = filtered.filter(p => p.isOriginal);
+            } else if (currentFilter === 'aesthetic') {
+                filtered = filtered.filter(p => p.isAesthetic);
+            }
+            renderGallery(filtered);
+        }
+
+        function openVoteModal(postId) {
+            const post = currentPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            selectedPostId = postId;
+            document.getElementById('modal-img').querySelector('img').src = post.imageUrl;
+            document.getElementById('modal-user').textContent = post.userName;
+            
+            // Reset stars
+            document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+
+            const modal = document.getElementById('voteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeVoteModal() {
+            const modal = document.getElementById('voteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function submitVote() {
+            const ratingInput = document.querySelector('input[name="rating"]:checked');
+            if (!ratingInput) return alert('Por favor seleccioná una puntuación');
+
+            const rating = parseInt(ratingInput.value);
+            
+            const postIndex = currentPosts.findIndex(p => p.id === selectedPostId);
+            if (postIndex !== -1) {
+                const post = currentPosts[postIndex];
+                const totalRating = (post.rating * post.voteCount) + rating;
+                post.voteCount++;
+                post.rating = totalRating / post.voteCount;
+                
+                closeVoteModal();
+                applyFilter();
+            }
+        }
+
+        // Initial load
+        loadCommunity();
+    </script>
+</body>
+
+</html>

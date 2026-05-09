@@ -27,7 +27,7 @@ Sigue estos pasos para desarrollar o probar el sistema en tu PC.
 
 ### Usuarios de Prueba:
 - **Administrador:** `admin@toco.com` / `admin123`
-- **Revendedor:** Puedes crear uno nuevo desde el Panel Admin o usar los que vienen por defecto en la base de datos una vez creados.
+- **Toker:** Puedes crear uno nuevo desde el Panel Admin o usar los que vienen por defecto en la base de datos una vez creados.
 
 ---
 
