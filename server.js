@@ -295,5 +295,3 @@ app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use(express.static(__dirname));
 
 app.listen(PORT, () => console.log(`Server en http://localhost:${PORT}`));
-(PORT, () => console.log(`Server en http://localhost:${PORT}`));
-.log(`Server en http://localhost:${PORT}`));
