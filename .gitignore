@@ -5,8 +5,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Base de Datos
-# *.db
-# *.db-journal
+*.db
+*.db-journal
 
 # Archivos de Sistema / IDE
 .DS_Store
