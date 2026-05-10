@@ -549,7 +549,7 @@
             formData.append('isAesthetic', document.getElementById('commIsAesthetic').checked ? 1 : 0);
             
             try {
-                const url = editingCommunityPostId ? \`/api/community/post/\${editingCommunityPostId}\` : '/api/community/post';
+                const url = editingCommunityPostId ? `/api/community/post/${editingCommunityPostId}` : '/api/community/post';
                 const method = editingCommunityPostId ? 'PUT' : 'POST';
 
                 const res = await fetch(url, {
