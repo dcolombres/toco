@@ -310,6 +310,35 @@ app.post('/api/community/post', upload.single('image'), (req, res) => {
     );
 });
 
+app.put('/api/community/post/:id', upload.single('image'), (req, res) => {
+    const id = req.params.id;
+    const userName = req.body.userName;
+    const description = req.body.description;
+    
+    // Convertimos los checkboxes a booleanos/enteros
+    const isOriginal = (req.body.isOriginal === 'true' || req.body.isOriginal === '1' || req.body.isOriginal === 'on' || req.body.isOriginal === true) ? 1 : 0;
+    const isAesthetic = (req.body.isAesthetic === 'true' || req.body.isAesthetic === '1' || req.body.isAesthetic === 'on' || req.body.isAesthetic === true) ? 1 : 0;
+
+    if (req.file) {
+        const imageUrl = `public/uploads/comunidad/${req.file.filename}`;
+        db.run('UPDATE community_posts SET imageUrl = ?, userName = ?, description = ?, isOriginal = ?, isAesthetic = ? WHERE id = ?', 
+            [imageUrl, userName, description, isOriginal, isAesthetic, id], 
+            function(err) {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({ success: true });
+            }
+        );
+    } else {
+        db.run('UPDATE community_posts SET userName = ?, description = ?, isOriginal = ?, isAesthetic = ? WHERE id = ?', 
+            [userName, description, isOriginal, isAesthetic, id], 
+            function(err) {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({ success: true });
+            }
+        );
+    }
+});
+
 app.delete('/api/community/post/:id', (req, res) => {
     const id = req.params.id;
     db.serialize(() => {

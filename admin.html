@@ -391,7 +391,8 @@
             <form id="communityForm" class="space-y-4">
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Foto (Archivo)</label>
-                    <input type="file" id="commImageFile" accept="image/*" required class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                    <input type="file" id="commImageFile" accept="image/*" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                    <p class="text-[10px] text-text-sec mt-1">Opcional si estás editando.</p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Nombre del Toker</label>
@@ -452,27 +453,33 @@
         }
 
         // --- COMMUNITY LOGIC ---
+        let currentAdminPosts = [];
+        let editingCommunityPostId = null;
+
         async function renderCommunityGrid() {
             const grid = document.getElementById('admin-community-grid');
             grid.innerHTML = '<div class="col-span-full text-center py-10 italic text-text-sec">Cargando comunidad...</div>';
             
             try {
                 const response = await fetch('/api/community');
-                const posts = await response.json();
+                currentAdminPosts = await response.json();
                 grid.innerHTML = '';
                 
-                if (posts.length === 0) {
+                if (currentAdminPosts.length === 0) {
                     grid.innerHTML = '<div class="col-span-full text-center py-10 italic text-text-sec">No hay publicaciones.</div>';
                     return;
                 }
 
-                posts.forEach(post => {
+                currentAdminPosts.forEach(post => {
                     const card = document.createElement('div');
                     card.className = 'bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group';
                     card.innerHTML = `
                         <div class="relative h-40">
                             <img src="${post.imageUrl}" class="w-full h-full object-cover">
-                            <div class="absolute top-2 right-2">
+                            <div class="absolute top-2 right-2 flex gap-2">
+                                <button onclick="openEditCommunityModal(${post.id})" class="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors shadow-lg">
+                                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                                </button>
                                 <button onclick="deleteCommunityPost(${post.id})" class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
@@ -500,9 +507,28 @@
         }
 
         function openCommunityModal() {
+            editingCommunityPostId = null;
             document.getElementById('communityForm').reset();
+            document.querySelector('#communityModal h2').textContent = 'Nueva Publicación Comunidad';
             document.getElementById('communityModal').classList.replace('hidden', 'flex');
         }
+
+        function openEditCommunityModal(id) {
+            const post = currentAdminPosts.find(p => p.id === id);
+            if (!post) return;
+            
+            editingCommunityPostId = id;
+            document.getElementById('communityForm').reset();
+            
+            document.getElementById('commUserName').value = post.userName;
+            document.getElementById('commDescription').value = post.description;
+            document.getElementById('commIsOriginal').checked = post.isOriginal === 1;
+            document.getElementById('commIsAesthetic').checked = post.isAesthetic === 1;
+            
+            document.querySelector('#communityModal h2').textContent = 'Editar Publicación';
+            document.getElementById('communityModal').classList.replace('hidden', 'flex');
+        }
+
         function closeCommunityModal() { document.getElementById('communityModal').classList.replace('flex', 'hidden'); }
 
         document.getElementById('communityForm').addEventListener('submit', async (e) => {
@@ -513,7 +539,7 @@
             
             if (fileInput.files.length > 0) {
                 formData.append('image', fileInput.files[0]);
-            } else {
+            } else if (!editingCommunityPostId) {
                 return alert('Por favor, selecciona una imagen.');
             }
             
@@ -523,8 +549,11 @@
             formData.append('isAesthetic', document.getElementById('commIsAesthetic').checked ? 1 : 0);
             
             try {
-                const res = await fetch('/api/community/post', {
-                    method: 'POST',
+                const url = editingCommunityPostId ? \`/api/community/post/\${editingCommunityPostId}\` : '/api/community/post';
+                const method = editingCommunityPostId ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
                     body: formData
                 });
                 if (res.ok) {
