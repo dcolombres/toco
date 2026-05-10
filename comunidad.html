@@ -103,10 +103,22 @@
                     ser Toker</a>
             </div>
 
-            <button class="md:hidden p-2">
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-text-main hover:text-primary transition-colors focus:outline-none">
                 <i data-lucide="menu"></i>
             </button>
         </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-20 flex flex-col p-4 gap-4 transition-all">
+            <a href="index.html#quienes-somos" class="text-text-main hover:text-primary transition-colors font-medium text-lg">Nosotros</a>
+            <a href="index.html#filosofia" class="text-text-main hover:text-primary transition-colors font-medium text-lg">Filosofía</a>
+            <a href="index.html#utilidades" class="text-text-main hover:text-primary transition-colors font-medium text-lg">Utilidades</a>
+            <a href="#" class="text-text-main hover:text-primary transition-colors font-bold text-primary text-lg">Comunidad</a>
+            <a href="index.html#como-funciona" class="text-text-main hover:text-primary transition-colors font-medium text-lg">Ser Toker</a>
+            <hr class="border-gray-100">
+            <a href="login.html" class="text-text-sec hover:text-primary transition-colors font-medium text-lg">Acceso Panel</a>
+            <a href="index.html#registro" class="bg-primary text-white text-center px-6 py-3 rounded-toco font-bold hover:shadow-lg transition-all mt-2">Quiero ser Toker</a>
+        </div>
     </header>
 
     <main class="pt-20">
@@ -339,6 +351,21 @@
 
         // Initial load
         loadCommunity();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
     </script>
 </body>
 
