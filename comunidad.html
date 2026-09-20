@@ -198,29 +198,48 @@
     <footer class="bg-text-main text-white py-12 px-4 mt-20">
         <div class="max-w-7xl mx-auto text-center">
             <a href="index.html" class="text-3xl font-title font-extrabold text-primary tracking-tighter mb-4 block">TOCO</a>
-            <p class="text-white/40 text-sm">© 2025 TOCO. Comunidad Toker.</p>
+            <p class="text-white/40 text-sm">© 2026 TOCO. Comunidad Toker.</p>
         </div>
     </footer>
 
     <script>
         lucide.createIcons();
 
+        const COMMUNITY_API = location.hostname.endsWith('github.io')
+            ? 'https://toco.moroarte.com/api'
+            : '/api';
+        const WHATSAPP_PHOTO_URL = 'https://wa.me/5491154949191?text=' + encodeURIComponent('Hola! Quiero mandar una foto de mi TOCO.');
+
         let currentPosts = [];
         let currentFilter = 'all';
         let selectedPostId = null;
 
+        function showGalleryFallback(message) {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-16 px-4">
+                    <p class="text-text-sec text-lg mb-6">${message}</p>
+                    <a href="${WHATSAPP_PHOTO_URL}" target="_blank"
+                        class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-toco font-bold hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">
+                        Mandar mi foto <i data-lucide="camera" class="w-5 h-5"></i>
+                    </a>
+                </div>`;
+            lucide.createIcons();
+        }
+
         async function loadCommunity() {
             try {
-                const response = await fetch('/api/community');
+                const response = await fetch(`${COMMUNITY_API}/community`);
                 if (response.ok) {
                     currentPosts = await response.json();
                     applyFilter();
-                } else {
-                    console.error('Error al cargar la comunidad');
+                    return;
                 }
+                console.error('Error al cargar la comunidad');
             } catch (err) {
                 console.error('Error de red al cargar la comunidad:', err);
             }
+            showGalleryFallback('La galería no está disponible por acá. Mandanos tu foto por WhatsApp y la sumamos.');
         }
 
         function renderGallery(posts) {
@@ -228,7 +247,7 @@
             grid.innerHTML = '';
 
             if (posts.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-20 italic text-text-sec">No hay fotos todavía. ¡Sé el primero!</div>';
+                showGalleryFallback('No hay fotos todavía. ¡Sé el primero!');
                 return;
             }
 
@@ -329,7 +348,7 @@
             const rating = parseInt(ratingInput.value);
             
             try {
-                const response = await fetch('/api/community/vote', {
+                const response = await fetch(`${COMMUNITY_API}/community/vote`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -343,10 +362,11 @@
                     closeVoteModal();
                     loadCommunity(); // Reload to show new rating
                 } else {
-                    console.error('Error al enviar el voto');
+                    alert('No se pudo enviar el voto. Probá de nuevo en un rato.');
                 }
             } catch (err) {
                 console.error('Error al votar:', err);
+                alert('No se pudo enviar el voto. Mandanos la foto por WhatsApp si preferís.');
             }
         }
 
