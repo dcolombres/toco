@@ -96,17 +96,18 @@ db.serialize(() => {
     db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('reseller_cost', '2500')`);
     db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('suggested_price', '5000')`);
 
-    // Datos de ejemplo para la comunidad (solo si la tabla está vacía)
+    // Galería demo de Comunidad (si todavía no hay fotos reales)
     db.get("SELECT COUNT(*) as count FROM community_posts", (err, row) => {
-        if (row && row.count === 0) {
-            const samplePosts = [
-                ['https://images.unsplash.com/photo-1581783898377-1c85bf937427?auto=format&fit=crop&q=80&w=800', 'Santi', 'Mi TOCO como soporte de incienso en el estudio.', 4.8, 12, 0, 1],
-                ['https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800', 'Martina', 'Lo uso para que no se me vuelen los bocetos.', 4.5, 8, 1, 0],
-                ['https://images.unsplash.com/photo-1544413647-b510493028e1?auto=format&fit=crop&q=80&w=800', 'Lucas', 'Compañero de mates y oficina.', 4.9, 25, 0, 0],
-                ['https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&q=80&w=800', 'Elena', 'Intervención artística en mi TOCO.', 5.0, 15, 1, 1]
-            ];
-            samplePosts.forEach(post => {
-                db.run(`INSERT INTO community_posts (imageUrl, userName, description, rating, voteCount, isOriginal, isAesthetic) VALUES (?, ?, ?, ?, ?, ?, ?)`, post);
+        const demoPosts = require('./js/community-demo.js');
+        if (row && row.count < 8 && Array.isArray(demoPosts)) {
+            db.run('DELETE FROM community_votes');
+            db.run('DELETE FROM community_posts', [], () => {
+                demoPosts.forEach(post => {
+                    db.run(
+                        `INSERT INTO community_posts (id, imageUrl, userName, description, rating, voteCount, isOriginal, isAesthetic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [post.id, post.imageUrl, post.userName, post.description, post.rating, post.voteCount, post.isOriginal, post.isAesthetic]
+                    );
+                });
             });
         }
     });

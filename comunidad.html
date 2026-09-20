@@ -202,6 +202,7 @@
         </div>
     </footer>
 
+    <script src="js/community-demo.js"></script>
     <script>
         lucide.createIcons();
 
@@ -209,10 +210,12 @@
             ? 'https://toco.moroarte.com/api'
             : '/api';
         const WHATSAPP_PHOTO_URL = 'https://wa.me/5491154949191?text=' + encodeURIComponent('Hola! Quiero mandar una foto de mi TOCO.');
+        const DEMO_VOTES_KEY = 'toco_demo_votes';
 
         let currentPosts = [];
         let currentFilter = 'all';
         let selectedPostId = null;
+        let demoMode = false;
 
         function showGalleryFallback(message) {
             const grid = document.getElementById('gallery-grid');
@@ -227,19 +230,53 @@
             lucide.createIcons();
         }
 
+        function normalizePost(p) {
+            return {
+                ...p,
+                rating: Number(p.rating) || 0,
+                voteCount: Number(p.voteCount) || 0,
+                isOriginal: Number(p.isOriginal) || 0,
+                isAesthetic: Number(p.isAesthetic) || 0
+            };
+        }
+
+        function withDemoVotes(posts) {
+            const saved = JSON.parse(localStorage.getItem(DEMO_VOTES_KEY) || '{}');
+            return posts.map(p => {
+                const extra = saved[p.id];
+                const base = normalizePost(p);
+                if (!extra) return base;
+                const voteCount = base.voteCount + extra.n;
+                const rating = ((base.rating * base.voteCount) + extra.sum) / voteCount;
+                return { ...base, rating, voteCount };
+            });
+        }
+
+        function useDemoGallery() {
+            demoMode = true;
+            currentPosts = withDemoVotes(TOCO_COMMUNITY_DEMO);
+            applyFilter();
+        }
+
         async function loadCommunity() {
             try {
-                const response = await fetch(`${COMMUNITY_API}/community`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2500);
+                const response = await fetch(`${COMMUNITY_API}/community`, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 if (response.ok) {
-                    currentPosts = await response.json();
-                    applyFilter();
-                    return;
+                    const data = await response.json();
+                    if (Array.isArray(data) && data.length >= 8) {
+                        demoMode = false;
+                        currentPosts = data.map(normalizePost);
+                        applyFilter();
+                        return;
+                    }
                 }
-                console.error('Error al cargar la comunidad');
             } catch (err) {
                 console.error('Error de red al cargar la comunidad:', err);
             }
-            showGalleryFallback('La galería no está disponible por acá. Mandanos tu foto por WhatsApp y la sumamos.');
+            useDemoGallery();
         }
 
         function renderGallery(posts) {
@@ -266,13 +303,13 @@
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
                             ${badges}
                         </div>
-                        <div class="absolute bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md p-3 rounded-2xl flex justify-between items-center translate-y-20 group-hover:translate-y-0 transition-transform duration-300">
+                        <div class="absolute bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md p-3 rounded-2xl flex justify-between items-center">
                              <div class="flex flex-col">
                                 <span class="text-[10px] uppercase tracking-wider font-bold text-text-sec">Mandada por</span>
                                 <span class="font-bold text-text-main">${post.userName}</span>
                              </div>
                              <div class="flex items-center gap-1 text-primary font-bold">
-                                <span>${post.rating.toFixed(1)}</span>
+                                <span>${Number(post.rating).toFixed(1)}</span>
                                 <i data-lucide="star" class="w-4 h-4 fill-primary"></i>
                              </div>
                         </div>
@@ -360,14 +397,24 @@
 
                 if (response.ok) {
                     closeVoteModal();
-                    loadCommunity(); // Reload to show new rating
-                } else {
-                    alert('No se pudo enviar el voto. Probá de nuevo en un rato.');
+                    loadCommunity();
+                    return;
                 }
             } catch (err) {
                 console.error('Error al votar:', err);
-                alert('No se pudo enviar el voto. Mandanos la foto por WhatsApp si preferís.');
             }
+
+            if (demoMode) {
+                const saved = JSON.parse(localStorage.getItem(DEMO_VOTES_KEY) || '{}');
+                const prev = saved[selectedPostId] || { n: 0, sum: 0 };
+                saved[selectedPostId] = { n: prev.n + 1, sum: prev.sum + rating };
+                localStorage.setItem(DEMO_VOTES_KEY, JSON.stringify(saved));
+                closeVoteModal();
+                useDemoGallery();
+                return;
+            }
+
+            alert('No se pudo enviar el voto. Mandanos la foto por WhatsApp si preferís.');
         }
 
         // Initial load
