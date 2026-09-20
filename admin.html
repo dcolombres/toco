@@ -200,6 +200,16 @@
                 </button>
             </div>
 
+            <!-- Payments Approval Card -->
+            <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50">
+                <h3 class="font-title font-bold text-lg mb-6 text-text-main flex items-center gap-2">
+                    <i data-lucide="wallet" class="w-5 h-5 text-secondary"></i> Rendiciones de Pago Pendientes
+                </h3>
+                <div id="admin-payments-list" class="space-y-4">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
             <div class="bg-white p-4 rounded-3xl card-shadow flex gap-4 border border-gray-50">
                 <div class="flex-1 relative">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-sec"></i>
@@ -254,13 +264,51 @@
         <section id="section-costs" class="hidden space-y-8 fade-in">
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h2 class="text-3xl font-title font-extrabold text-text-main">Costos de Producción</h2>
-                    <p class="text-text-sec">Administra los gastos fijos y variables</p>
+                    <h2 class="text-3xl font-title font-extrabold text-text-main">Costos y Precios</h2>
+                    <p class="text-text-sec">Administra los márgenes y gastos del ecosistema</p>
                 </div>
-                <div class="bg-surface px-6 py-4 rounded-3xl border border-gray-100 flex gap-6 items-center card-shadow">
-                    <div>
-                        <p class="text-[10px] uppercase font-bold text-text-sec mb-1">Costo Total Aproximado (Por unidad)</p>
-                        <p class="text-2xl font-title font-extrabold text-error" id="total-cost-display">$0</p>
+            </div>
+
+            <!-- Global Pricing Card -->
+            <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50">
+                <h3 class="font-title font-bold text-lg mb-6 text-text-main flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-primary"></i> Precios Maestros del Sistema
+                </h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-text-sec">Costo de Producción (Fábrica)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-text-sec">$</span>
+                            <input type="number" id="setting-factory-cost" onchange="updateSystemSettings()" class="w-full pl-8 pr-4 py-4 rounded-2xl bg-surface border border-gray-100 focus:border-primary outline-none font-bold text-lg transition-all">
+                        </div>
+                        <p class="text-[9px] text-text-sec italic">Lo que le cuesta a TOCO fabricar 1 unidad.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-text-sec">Precio de Venta a Tokers</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-text-sec">$</span>
+                            <input type="number" id="setting-reseller-cost" onchange="updateSystemSettings()" class="w-full pl-8 pr-4 py-4 rounded-2xl bg-surface border border-gray-100 focus:border-primary outline-none font-bold text-lg transition-all">
+                        </div>
+                        <p class="text-[9px] text-text-sec italic">Lo que el Toker le paga a TOCO (su deuda).</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-text-sec">Precio Sugerido Público</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-text-sec">$</span>
+                            <input type="number" id="setting-suggested-price" onchange="updateSystemSettings()" class="w-full pl-8 pr-4 py-4 rounded-2xl bg-surface border border-gray-100 focus:border-primary outline-none font-bold text-lg transition-all">
+                        </div>
+                        <p class="text-[9px] text-text-sec italic">Referencia de venta final para el Toker.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-gray-50 grid grid-cols-2 gap-4">
+                    <div class="bg-primary/5 p-4 rounded-2xl border border-primary/10">
+                        <p class="text-[10px] font-bold uppercase text-primary mb-1">Margen Fábrica (Ganancia TOCO)</p>
+                        <p class="text-2xl font-title font-extrabold text-primary" id="factory-margin-display">$0</p>
+                    </div>
+                    <div class="bg-secondary/5 p-4 rounded-2xl border border-secondary/10">
+                        <p class="text-[10px] font-bold uppercase text-secondary mb-1">Margen Toker Sugerido</p>
+                        <p class="text-2xl font-title font-extrabold text-secondary" id="reseller-margin-display">$0</p>
                     </div>
                 </div>
             </div>
@@ -445,7 +493,7 @@
             if (window.innerWidth < 1024 && document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
 
             if (section === 'global') { renderGlobalChart(); renderGlobalSalesFeed(); }
-            if (section === 'resellers') renderResellersGrid();
+            if (section === 'resellers') { renderResellersGrid(); renderPayments(); }
             if (section === 'requests') renderRequests();
             if (section === 'stock') renderMasterStock();
             if (section === 'costs') renderCosts();
@@ -603,7 +651,7 @@
             document.getElementById('g-debt').textContent = UI.formatCurrency(stats.globalDebtToFactory);
             if (document.getElementById('g-cost')) document.getElementById('g-cost').textContent = UI.formatCurrency(stats.globalProductionCost);
             if (document.getElementById('g-net')) document.getElementById('g-net').textContent = UI.formatCurrency(stats.factoryNetProfit);
-            if (document.getElementById('g-costUnit')) document.getElementById('g-costUnit').textContent = UI.formatCurrency(stats.costPerUnit);
+            if (document.getElementById('g-costUnit')) document.getElementById('g-costUnit').textContent = UI.formatCurrency(stats.factoryCostPerUnit);
 
             const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
             const currentMonth = new Date().getMonth();
@@ -683,6 +731,12 @@
             const grid = document.getElementById('admin-resellers-grid');
             grid.innerHTML = '';
             State.data.resellers.forEach(r => {
+                const sales = State.data.sales.filter(s => s.userId === r.id);
+                const payments = State.data.payments.filter(p => p.userId === r.id && p.status === 'Aprobado');
+                const totalDebt = sales.reduce((acc, s) => acc + s.debt, 0);
+                const totalPaid = payments.reduce((acc, p) => acc + p.amount, 0);
+                const netDebt = totalDebt - totalPaid;
+
                 const card = document.createElement('div');
                 card.className = 'bg-white p-6 rounded-3xl card-shadow border border-gray-50 flex flex-col gap-4';
                 card.innerHTML = `
@@ -696,9 +750,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-surface p-3 rounded-2xl">
-                        <p class="text-[9px] font-bold text-text-sec uppercase mb-1">Stock Actual</p>
-                        <p class="font-bold text-text-main text-lg">${r.stock} u.</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-surface p-3 rounded-2xl">
+                            <p class="text-[9px] font-bold text-text-sec uppercase mb-1">Stock Actual</p>
+                            <p class="font-bold text-text-main text-lg">${r.stock} u.</p>
+                        </div>
+                        <div class="bg-surface p-3 rounded-2xl">
+                            <p class="text-[9px] font-bold text-text-sec uppercase mb-1">Deuda Neta</p>
+                            <p class="font-bold ${netDebt > 0 ? 'text-error' : 'text-secondary'} text-lg">${UI.formatCurrency(netDebt)}</p>
+                        </div>
                     </div>
                     <div class="flex gap-2 pt-2 border-t border-gray-50 mt-2">
                         <button onclick="openStockModal(${r.id}, '${r.name}')" class="btn-primary !py-2 !text-xs flex-1">Asignar Stock</button>
@@ -709,6 +769,47 @@
                 grid.appendChild(card);
             });
             lucide.createIcons();
+        }
+
+        function renderPayments() {
+            const list = document.getElementById('admin-payments-list');
+            if (!list) return;
+            const pending = State.data.payments.filter(p => p.status === 'Pendiente');
+            list.innerHTML = '';
+            
+            if (pending.length === 0) {
+                list.innerHTML = '<p class="text-sm text-text-sec italic text-center py-6">No hay pagos pendientes de aprobación.</p>';
+                return;
+            }
+
+            pending.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'bg-surface p-4 rounded-2xl flex justify-between items-center border border-gray-50 shadow-sm';
+                item.innerHTML = `
+                    <div>
+                        <p class="font-bold text-text-main">${p.resellerName} - <span class="text-secondary">${UI.formatCurrency(p.amount)}</span></p>
+                        <p class="text-[10px] text-text-sec font-bold uppercase tracking-wider">${p.reference || 'Sin referencia'} - ${UI.formatDate(p.timestamp)}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="handlePayment(${p.id}, 'Aprobado')" class="bg-secondary text-white p-2 rounded-xl hover:bg-secondary/90 transition-all">
+                            <i data-lucide="check" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="handlePayment(${p.id}, 'Rechazado')" class="bg-white border border-red-100 text-error p-2 rounded-xl hover:bg-red-50 transition-all">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+            lucide.createIcons();
+        }
+
+        async function handlePayment(id, status) {
+            if (!confirm(`¿Confirmás que querés marcar este pago como ${status.toUpperCase()}?`)) return;
+            await API.approvePayment(id, status);
+            await State.loadAdminData();
+            renderPayments();
+            renderResellersGrid();
         }
 
         async function confirmDeleteReseller(id, name) {
@@ -786,17 +887,27 @@
         }
 
         // --- COSTS LOGIC ---
-        function renderCosts() {
+        async function renderCosts() {
             const fixedContainer = document.getElementById('fixed-costs-container');
             const variableContainer = document.getElementById('variable-costs-container');
             const uniqueContainer = document.getElementById('unique-costs-container');
             if(!fixedContainer || !variableContainer) return;
+            
+            // Render settings
+            const settings = State.data.settings || {};
+            document.getElementById('setting-factory-cost').value = settings.factory_cost || 0;
+            document.getElementById('setting-reseller-cost').value = settings.reseller_cost || 0;
+            document.getElementById('setting-suggested-price').value = settings.suggested_price || 0;
+
+            const factoryMargin = (Number(settings.reseller_cost) || 0) - (Number(settings.factory_cost) || 0);
+            const resellerMargin = (Number(settings.suggested_price) || 0) - (Number(settings.reseller_cost) || 0);
+
+            document.getElementById('factory-margin-display').textContent = UI.formatCurrency(factoryMargin);
+            document.getElementById('reseller-margin-display').textContent = UI.formatCurrency(resellerMargin);
+
             fixedContainer.innerHTML = '';
             variableContainer.innerHTML = '';
             if(uniqueContainer) uniqueContainer.innerHTML = '';
-
-            const costPerUnit = State.data.costs.filter(c => c.type !== 'unico').reduce((sum, c) => sum + c.amount, 0);
-            if(document.getElementById('total-cost-display')) document.getElementById('total-cost-display').innerText = UI.formatCurrency(costPerUnit);
 
             const fixed = State.data.costs.filter(c => c.type === 'fijo');
             const variable = State.data.costs.filter(c => c.type === 'variable');
@@ -849,6 +960,17 @@
                 variableContainer.appendChild(item);
             });
             lucide.createIcons();
+        }
+
+        async function updateSystemSettings() {
+            const settings = {
+                factory_cost: document.getElementById('setting-factory-cost').value,
+                reseller_cost: document.getElementById('setting-reseller-cost').value,
+                suggested_price: document.getElementById('setting-suggested-price').value
+            };
+            await API.updateSettings(settings);
+            await State.loadAdminData();
+            renderCosts();
         }
 
         async function updateFixedCost(id, name, amount) {

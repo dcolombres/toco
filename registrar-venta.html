@@ -121,6 +121,11 @@
             const reseller = State.getCurrentReseller();
             if (!reseller) return window.location.href = 'login.html';
 
+            // Pre-fill with suggested price
+            const suggested = Number(State.data.settings.suggested_price || 5000);
+            priceInput.value = suggested;
+            priceInput.min = Number(State.data.settings.reseller_cost || 2500);
+
             // Populate Commerce Select
             reseller.clients.forEach(c => {
                 const opt = document.createElement('option');
@@ -133,6 +138,8 @@
             dateInput.valueAsDate = new Date();
             stockDisplay.textContent = reseller.stock;
             quantityInput.max = reseller.stock;
+
+            updatePreviews();
         }
         initPage();
 
@@ -140,8 +147,10 @@
             const q = Number(quantityInput.value) || 0;
             const p = Number(priceInput.value) || 0;
             
+            const resellerCost = Number(State.data.settings.reseller_cost || 2500);
+            
             const total = q * p;
-            const debt = q * TOCO_CONFIG.COST_PER_UNIT;
+            const debt = q * resellerCost;
             const profit = total - debt;
 
             previewTotal.textContent = UI.formatCurrency(total);
@@ -158,9 +167,11 @@
             const p = Number(priceInput.value);
             const commerce = commerceSelect.value;
             
+            const resellerCost = Number(State.data.settings.reseller_cost || 2500);
+            
             if (!commerce) return alert('Por favor seleccioná un comercio');
             if (q > State.getCurrentReseller().stock) return alert('No tenés suficiente stock!');
-            if (p < TOCO_CONFIG.COST_PER_UNIT) return alert(`El precio de venta no puede ser menor al costo ($${TOCO_CONFIG.COST_PER_UNIT})`);
+            if (p < resellerCost) return alert(`El precio de venta no puede ser menor al costo ($${resellerCost})`);
 
             if (!confirm(`¿Confirmás la venta de ${q} TOCOs a ${commerce} por un total de ${UI.formatCurrency(q * p)}?`)) return;
 

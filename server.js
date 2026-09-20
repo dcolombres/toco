@@ -52,6 +52,16 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS costs (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT, amount REAL)`);
     
     // Nueva tabla para Comunidad TOCO
+    db.run(`CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)`);
+    db.run(`CREATE TABLE IF NOT EXISTS payments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER,
+        amount REAL,
+        status TEXT DEFAULT 'Pendiente',
+        reference TEXT,
+        timestamp DATETIME DEFAULT (datetime('now','localtime')),
+        FOREIGN KEY(userId) REFERENCES users(id)
+    )`);
     db.run(`CREATE TABLE IF NOT EXISTS community_posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         imageUrl TEXT, 
@@ -80,6 +90,11 @@ db.serialize(() => {
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (4, 'Inversión Inicial', 'unico', 0)`);
     db.run(`INSERT OR IGNORE INTO master_stock (id, quantity) VALUES (1, 5000)`);
     db.run(`INSERT OR IGNORE INTO users (name, email, password, role) VALUES ('Admin Master', 'admin@toco.com', 'admin123', 'admin')`);
+
+    // Inicializar settings
+    db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('factory_cost', '2500')`);
+    db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('reseller_cost', '2500')`);
+    db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('suggested_price', '5000')`);
 
     // Datos de ejemplo para la comunidad (solo si la tabla está vacía)
     db.get("SELECT COUNT(*) as count FROM community_posts", (err, row) => {
@@ -347,6 +362,62 @@ app.delete('/api/community/post/:id', (req, res) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json({ success: true });
         });
+    });
+});
+
+// --- SETTINGS ENDPOINTS ---
+app.get('/api/settings', (req, res) => {
+    db.all('SELECT * FROM settings', [], (err, rows) => {
+        const settings = {};
+        rows.forEach(row => settings[row.key] = row.value);
+        res.json(settings);
+    });
+});
+
+app.post('/api/settings', (req, res) => {
+    const settings = req.body;
+    const keys = Object.keys(settings);
+    if (keys.length === 0) return res.json({ success: true });
+
+    let completed = 0;
+    let hasError = false;
+
+    keys.forEach(key => {
+        db.run('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', [key, settings[key].toString()], (err) => {
+            if (hasError) return;
+            if (err) {
+                hasError = true;
+                return res.status(500).json({ error: err.message });
+            }
+            completed++;
+            if (completed === keys.length) {
+                res.json({ success: true });
+            }
+        });
+    });
+});
+
+// --- PAYMENT ENDPOINTS ---
+app.post('/api/payments', (req, res) => {
+    const { userId, amount, reference } = req.body;
+    db.run('INSERT INTO payments (userId, amount, reference) VALUES (?, ?, ?)', [userId, amount, reference], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID, success: true });
+    });
+});
+
+app.get('/api/admin/payments', (req, res) => {
+    db.all(`SELECT p.*, u.name as resellerName FROM payments p LEFT JOIN users u ON p.userId = u.id ORDER BY p.timestamp DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows || []);
+    });
+});
+
+app.post('/api/admin/approve-payment', (req, res) => {
+    const { paymentId, status } = req.body; // status: 'Aprobado' o 'Rechazado'
+    db.run('UPDATE payments SET status = ? WHERE id = ?', [status, paymentId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
     });
 });
 

@@ -4,42 +4,56 @@
  */
 
 const TOCO_CONFIG = {
-    COST_PER_UNIT: 2500,
-    PRICE_PER_UNIT: 5000,
     API_BASE: '/api'
 };
 
 const State = {
     currentUser: JSON.parse(localStorage.getItem('toco_user')) || null,
-    data: { stock: 0, earnings: 0, debt: 0, sales: [], clients: [], requests: [], resellers: [] },
+    data: { stock: 0, earnings: 0, debt: 0, sales: [], clients: [], requests: [], resellers: [], settings: {}, payments: [] },
+
+    async loadSettings() {
+        try {
+            const resp = await fetch(`${TOCO_CONFIG.API_BASE}/settings`);
+            this.data.settings = await resp.json();
+        } catch (err) { console.error('Error loadSettings:', err); }
+    },
 
     async loadResellerData() {
         if (!this.currentUser || this.currentUser.role !== 'reseller') return;
         try {
+            await this.loadSettings();
             const resp = await fetch(`${TOCO_CONFIG.API_BASE}/reseller/data/${this.currentUser.id}`);
             const remote = await resp.json();
             this.data.stock = remote.stock || 0;
             this.data.sales = remote.sales || [];
             this.data.clients = remote.clients || [];
             this.data.requests = remote.requests || [];
+            this.data.payments = remote.payments || [];
             this.data.earnings = this.data.sales.reduce((acc, s) => acc + s.profit, 0);
-            this.data.debt = this.data.sales.reduce((acc, s) => acc + s.debt, 0);
+            
+            const totalDebt = this.data.sales.reduce((acc, s) => acc + s.debt, 0);
+            const totalPaid = this.data.payments.filter(p => p.status === 'Aprobado').reduce((acc, p) => acc + p.amount, 0);
+            this.data.debt = totalDebt - totalPaid;
         } catch (err) { console.error('Error loadResellerData:', err); }
     },
 
     async loadAdminData() {
         if (!this.currentUser || this.currentUser.role !== 'admin') return;
         try {
-            const [resResp, reqResp, salesResp, costsResp] = await Promise.all([
+            const [resResp, reqResp, salesResp, costsResp, settings, payResp] = await Promise.all([
                 fetch(`${TOCO_CONFIG.API_BASE}/admin/resellers`),
                 fetch(`${TOCO_CONFIG.API_BASE}/admin/requests`),
                 fetch(`${TOCO_CONFIG.API_BASE}/admin/sales`),
-                fetch(`${TOCO_CONFIG.API_BASE}/admin/costs`)
+                fetch(`${TOCO_CONFIG.API_BASE}/admin/costs`),
+                fetch(`${TOCO_CONFIG.API_BASE}/settings`).then(r => r.json()),
+                fetch(`${TOCO_CONFIG.API_BASE}/admin/payments`)
             ]);
             this.data.resellers = await resResp.json();
             this.data.requests = await reqResp.json();
             this.data.sales = await salesResp.json();
             this.data.costs = await costsResp.json();
+            this.data.payments = await payResp.json();
+            this.data.settings = settings;
         } catch (err) { console.error('Error loadAdminData:', err); }
     },
 
@@ -47,24 +61,36 @@ const State = {
         const resellers = this.data.resellers || [];
         const sales = this.data.sales || [];
         const costs = this.data.costs || [];
+        const settings = this.data.settings || {};
+        const payments = this.data.payments || [];
         
         const totalSales = sales.reduce((acc, s) => acc + s.quantity, 0);
-        const ecosystemRevenue = sales.reduce((acc, s) => acc + s.profit, 0);
-        const globalDebtToFactory = sales.reduce((acc, s) => acc + s.debt, 0);
+        const ecosystemRevenue = sales.reduce((acc, s) => acc + s.profit, 0); // Lo que ganan los Tokers
         
-        const costPerUnit = costs.filter(c => c.type !== 'unico').reduce((acc, c) => acc + c.amount, 0);
+        const totalGrossDebt = sales.reduce((acc, s) => acc + s.debt, 0); // Lo que los Tokers deben/pagaron a TOCO
+        const totalPaid = payments.filter(p => p.status === 'Aprobado').reduce((acc, p) => acc + p.amount, 0);
+        const pendingDebt = totalGrossDebt - totalPaid;
+        
+        // Costo de fábrica manual definido por el admin
+        const factoryCostPerUnit = Number(settings.factory_cost || 0);
+        
+        // Costo variable (todavía podemos usar la tabla de costos para extras)
+        const extraCosts = costs.filter(c => c.type === 'variable').reduce((acc, c) => acc + c.amount, 0);
         const uniqueCost = costs.filter(c => c.type === 'unico').reduce((acc, c) => acc + c.amount, 0);
-        const globalProductionCost = (totalSales * costPerUnit) + uniqueCost;
-        const factoryNetProfit = globalDebtToFactory - globalProductionCost;
+        
+        const totalUnitCost = factoryCostPerUnit + extraCosts;
+        const globalProductionCost = (totalSales * totalUnitCost) + uniqueCost;
+        const factoryNetProfit = totalGrossDebt - globalProductionCost;
 
         return {
             totalResellers: resellers.length,
             totalGlobalSales: totalSales,
             ecosystemRevenue: ecosystemRevenue,
-            globalDebtToFactory: globalDebtToFactory,
+            globalDebtToFactory: pendingDebt, // Lo que falta cobrar
             globalProductionCost: globalProductionCost,
             factoryNetProfit: factoryNetProfit,
-            costPerUnit: costPerUnit,
+            factoryCostPerUnit: totalUnitCost, // Mostramos el total unitario real
+            resellerCostPerUnit: Number(settings.reseller_cost || 0),
             uniqueCost: uniqueCost
         };
     },
@@ -84,13 +110,17 @@ const State = {
     getCurrentReseller() { return this.currentUser && this.currentUser.role === 'reseller' ? { ...this.currentUser, ...this.data } : null; },
     async registerSale(saleData) {
         if (!this.currentUser) throw new Error("No autenticado");
+        if (!this.data.settings.reseller_cost) await this.loadSettings();
+        
+        const resellerCost = Number(this.data.settings.reseller_cost || 2500);
+        
         const payload = {
             userId: this.currentUser.id,
             commerce: saleData.commerce,
             quantity: saleData.quantity,
             price: saleData.price,
-            profit: (saleData.price - TOCO_CONFIG.COST_PER_UNIT) * saleData.quantity,
-            debt: TOCO_CONFIG.COST_PER_UNIT * saleData.quantity
+            profit: (saleData.price - resellerCost) * saleData.quantity,
+            debt: resellerCost * saleData.quantity
         };
         const resp = await fetch(`${TOCO_CONFIG.API_BASE}/sales`, {
             method: 'POST',
@@ -105,6 +135,15 @@ const State = {
 };
 
 const API = {
+    async updateSettings(settings) {
+        const resp = await fetch(`${TOCO_CONFIG.API_BASE}/settings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(settings)
+        });
+        return await resp.json();
+    },
+
     async submitStockRequest(userId, quantity) {
         const resp = await fetch(`${TOCO_CONFIG.API_BASE}/requests`, {
             method: 'POST',
@@ -222,6 +261,24 @@ const API = {
 
     async deleteClient(id) {
         return await fetch(`${TOCO_CONFIG.API_BASE}/clients/${id}`, { method: 'DELETE' }).then(r => r.json());
+    },
+
+    async submitPayment(data) {
+        const resp = await fetch(`${TOCO_CONFIG.API_BASE}/payments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return await resp.json();
+    },
+
+    async approvePayment(paymentId, status) {
+        const resp = await fetch(`${TOCO_CONFIG.API_BASE}/admin/approve-payment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId, status })
+        });
+        return await resp.json();
     }
 };
 

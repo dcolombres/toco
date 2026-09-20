@@ -35,10 +35,23 @@
                 <p class="text-xl font-title font-extrabold text-secondary" id="profile-earnings">$0</p>
             </div>
             <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 fade-in">
-                <p class="text-[10px] font-bold uppercase text-text-sec mb-1">Unidades Vendidas</p>
-                <p class="text-xl font-title font-extrabold text-text-main" id="profile-sales">0</p>
+                <p class="text-[10px] font-bold uppercase text-text-sec mb-1">Deuda Pendiente</p>
+                <p class="text-xl font-title font-extrabold text-error" id="profile-debt">$0</p>
             </div>
         </div>
+
+        <!-- Financial Management Section -->
+        <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-title font-bold text-text-main">Gestión de Pagos</h3>
+                <button onclick="openPaymentModal()" class="btn-primary !py-2 !px-4 !text-xs">Informar Pago</button>
+            </div>
+
+            <div id="payments-history" class="space-y-3">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
 
         <!-- Quick Links -->
         <div class="bg-white rounded-3xl card-shadow overflow-hidden fade-in border border-gray-50">
@@ -95,9 +108,58 @@
         </a>
     </nav>
 
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl fade-in">
+            <h2 class="text-2xl font-title font-extrabold text-text-main mb-2">Informar Pago</h2>
+            <p class="text-text-sec text-sm mb-6">Ingresá el monto que enviaste a la fábrica.</p>
+            <form id="paymentForm" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Monto en $</label>
+                    <input type="number" id="paymentAmount" required min="1" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all text-center text-2xl font-bold">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Referencia / Comprobante</label>
+                    <input type="text" id="paymentRef" placeholder="Ej: Transferencia Banco X" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all text-sm">
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="closePaymentModal()" class="btn-secondary flex-1">Cancelar</button>
+                    <button type="submit" class="btn-primary flex-1">Informar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
     <script>
         lucide.createIcons();
+
+        function openPaymentModal() {
+            document.getElementById('paymentModal').classList.replace('hidden', 'flex');
+        }
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.replace('flex', 'hidden');
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = Number(document.getElementById('paymentAmount').value);
+            const reference = document.getElementById('paymentRef').value;
+
+            try {
+                await API.submitPayment({
+                    userId: State.currentUser.id,
+                    amount,
+                    reference
+                });
+                alert('Pago informado con éxito. Pendiente de aprobación.');
+                closePaymentModal();
+                initPage();
+            } catch (err) {
+                alert('Error al informar pago: ' + err.message);
+            }
+        });
+
         async function initPage() {
             await State.loadResellerData();
             const reseller = State.getCurrentReseller();
@@ -107,7 +169,29 @@
                 document.getElementById('profile-email').textContent = reseller.email;
                 document.getElementById('profile-status').textContent = reseller.status || 'Activo';
                 document.getElementById('profile-earnings').textContent = UI.formatCurrency(reseller.earnings || 0);
-                document.getElementById('profile-sales').textContent = reseller.sales.reduce((acc, s) => acc + s.quantity, 0);
+                document.getElementById('profile-debt').textContent = UI.formatCurrency(reseller.debt || 0);
+
+                const history = document.getElementById('payments-history');
+                history.innerHTML = '';
+                if (reseller.payments.length === 0) {
+                    history.innerHTML = '<p class="text-[10px] text-text-sec italic text-center py-4">Sin pagos informados.</p>';
+                }
+                reseller.payments.forEach(p => {
+                    const item = document.createElement('div');
+                    item.className = 'flex justify-between items-center p-3 bg-surface rounded-xl border border-gray-50';
+                    let statusClass = p.status === 'Aprobado' ? 'text-secondary' : (p.status === 'Rechazado' ? 'text-error' : 'text-text-sec');
+                    item.innerHTML = `
+                        <div>
+                            <p class="font-bold text-xs text-text-main">${UI.formatCurrency(p.amount)}</p>
+                            <p class="text-[9px] text-text-sec">${p.reference || 'Sin referencia'}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] font-bold uppercase ${statusClass}">${p.status}</p>
+                            <p class="text-[8px] text-text-sec">${UI.formatDate(p.timestamp)}</p>
+                        </div>
+                    `;
+                    history.appendChild(item);
+                });
             }
         }
         initPage();
