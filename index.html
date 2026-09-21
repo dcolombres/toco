@@ -627,6 +627,7 @@
         </div>
     </footer>
 
+    <script src="js/config.js"></script>
     <script>
         lucide.createIcons();
 
@@ -660,7 +661,8 @@
             const phone = form.phone.value.trim();
             const email = form.email.value.trim();
             const text = `Hola! Quiero ser Toker.\nNombre: ${name}\nWhatsApp: ${phone}\nEmail: ${email}`;
-            window.open(`https://wa.me/5491154949191?text=${encodeURIComponent(text)}`, '_blank');
+            const wa = TOCO_WA(text);
+            if (wa !== '#') window.open(wa, '_blank');
             form.classList.add('hidden');
             document.getElementById('successMessage').classList.remove('hidden');
         });

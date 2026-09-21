@@ -69,7 +69,7 @@
                 </div>
                 <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300"></i>
             </a>
-            <a href="https://wa.me/5491154949191" target="_blank" class="flex items-center justify-between p-5 hover:bg-surface transition-colors">
+            <a id="support-whatsapp" href="#" target="_blank" class="flex items-center justify-between p-5 hover:bg-surface transition-colors">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-secondary"><i data-lucide="help-circle"></i></div>
                     <span class="font-bold text-text-main text-sm">Soporte Técnico</span>
@@ -130,9 +130,11 @@
         </div>
     </div>
 
+    <script src="js/config.js"></script>
     <script src="js/app.js"></script>
     <script>
         lucide.createIcons();
+        document.getElementById('support-whatsapp').href = TOCO_WA();
 
         function openPaymentModal() {
             document.getElementById('paymentModal').classList.replace('hidden', 'flex');

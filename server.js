@@ -1,7 +1,6 @@
 /**
  * @file server.js
- * @description Servidor optimizado para WNPower / cPanel.
- * Gestiona la API REST y la persistencia de datos mediante SQLite.
+ * @description API REST y persistencia SQLite para TOCO.
  */
 
 const express = require('express');
@@ -11,8 +10,27 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 
+// Carga opcional de .env sin dependencia extra
+try {
+    const envPath = path.join(__dirname, '.env');
+    if (fs.existsSync(envPath)) {
+        fs.readFileSync(envPath, 'utf8').split('\n').forEach((line) => {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('#')) return;
+            const eq = trimmed.indexOf('=');
+            if (eq === -1) return;
+            const key = trimmed.slice(0, eq).trim();
+            const value = trimmed.slice(eq + 1).trim();
+            if (key && process.env[key] === undefined) process.env[key] = value;
+        });
+    }
+} catch (_) { /* ignore */ }
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@localhost';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'changeme';
+const DEFAULT_USER_PASSWORD = process.env.DEFAULT_USER_PASSWORD || 'changeme';
 
 // Configuración de multer para subida de archivos
 const uploadDir = path.join(__dirname, 'public', 'uploads', 'comunidad');
@@ -89,7 +107,11 @@ db.serialize(() => {
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (3, 'Packaging', 'fijo', 0)`);
     db.run(`INSERT OR IGNORE INTO costs (id, name, type, amount) VALUES (4, 'Inversión Inicial', 'unico', 0)`);
     db.run(`INSERT OR IGNORE INTO master_stock (id, quantity) VALUES (1, 5000)`);
-    db.run(`INSERT OR IGNORE INTO users (name, email, password, role) VALUES ('Admin Master', 'admin@toco.com', 'admin123', 'admin')`);
+    db.run(`INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, 'admin')`, [
+        'Admin',
+        ADMIN_EMAIL,
+        ADMIN_PASSWORD
+    ]);
 
     // Inicializar settings
     db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('factory_cost', '2500')`);
@@ -198,7 +220,7 @@ app.get('/api/admin/requests', (req, res) => {
 app.post('/api/admin/resellers', (req, res) => {
     const { name, email, password, initialStock = 0 } = req.body;
     db.serialize(() => {
-        db.run('INSERT INTO users (name, email, password, role, stock) VALUES (?, ?, ?, "reseller", ?)', [name, email, password || 'toco123', initialStock], function(err) {
+        db.run('INSERT INTO users (name, email, password, role, stock) VALUES (?, ?, ?, "reseller", ?)', [name, email, password || DEFAULT_USER_PASSWORD, initialStock], function(err) {
             if (err) return res.status(500).json({ error: 'Email ya existe' });
             const newUserId = this.lastID;
             if (initialStock > 0) {

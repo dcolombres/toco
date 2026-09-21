@@ -1,52 +1,44 @@
-# TOCO - Sistema de Gestión y Comunidad
+# TOCO
 
-Este es el ecosistema digital de **TOCO**, diseñado para empoderar a jóvenes argentinos como embajadores de lo real (**Tokers**). El sistema integra una Web Institucional, una sección de Comunidad participativa y un Panel de Gestión robusto.
+Proyecto colaborativo de la plataforma TOCO (web + comunidad + paneles).
 
-## 🚀 Arquitectura del Proyecto
+## Requisitos
 
-El sistema utiliza una arquitectura **Full-Stack** ligera y eficiente, optimizada para servidores tipo cPanel.
+- Node.js 16+
+- npm
 
-- **Frontend:** HTML5, Tailwind CSS, JavaScript Vanilla, Lucide Icons, Chart.js.
-- **Backend:** Node.js + Express.js.
-- **Base de Datos:** SQLite (Persistencia en archivo local `toco.db`).
+## Puesta en marcha (local)
 
-### Módulos Principales:
-1. **Web Institucional (`index.html`):** Landing page con el Manifiesto TOCO y captación de embajadores.
-2. **Comunidad TOCO (`comunidad.html`):** Galería participativa con sistema de votación (0-5 estrellas) y rankings de ideas de uso.
-3. **Panel Toker (Reseller):** Dashboard de ventas, CRM de locales y gestión de stock/pedidos.
-4. **Panel Admin (Master):** Analítica global, gestión de costos, usuarios y logística inversa.
+```bash
+cp .env.example .env
+# Editá .env y, si hace falta, js/config.js (solo en local)
+npm install
+npm start
+```
 
----
+Abrí `http://localhost:3000`.
 
-## 📸 Sección Comunidad TOCO
-Para más detalles sobre la implementación técnica de la galería y el sistema de votos, consulta el archivo específico:
-👉 **[README_Comunidad.md](./README_Comunidad.md)**
+## Colaboración
 
----
+1. Creá una rama desde `main`.
+2. Hacé cambios acotados y claros.
+3. Abrí un Pull Request describiendo el *porqué* del cambio.
+4. No subas secretos, credenciales, números personales, bases de datos ni material interno.
 
-## 🚀 Despliegue en Producción (cPanel)
-El repositorio incluye una configuración lista para despliegue:
-1. **`.cpanel.yml`**: Automatización de copia de archivos.
-2. **Sincronización de DB**: `toco.db` incluido para asegurar tablas base.
+## Qué no va al repo
 
-### Pasos para Actualizar:
-- `git push origin main`.
-- En cPanel Git: `Update from Remote` -> `Deploy Head Revision`.
-- **Reiniciar App Node.js** en cPanel para aplicar cambios en `server.js`.
+- Archivos `.env` con datos reales (y números reales en `js/config.js`)
+- Bases SQLite (`*.db`)
+- Prompts, instructivos de hosting, material interno o prototipos de diseño
+- Credenciales, contactos o datos de usuarios reales
 
----
+## Scripts
 
-## 🛠️ Tecnologías y Requisitos
-- **Node.js:** v16.x+.
-- **SQLite3:** Base de datos local.
-- **NPM:** `express`, `sqlite3`, `cors`.
+| Comando        | Descripción              |
+|----------------|--------------------------|
+| `npm start`    | Levanta el servidor      |
+| `npm run build:css` | Compila Tailwind    |
 
----
+## Licencia / uso
 
-## 📂 Repositorio Oficial
-[https://github.com/dcolombres/toco](https://github.com/dcolombres/toco)
-
----
-
-## 📧 Soporte
-Contactar al equipo de desarrollo de TOCO para nuevas funcionalidades.
+Uso interno del equipo TOCO. Coordiná con el equipo antes de publicar o desplegar.

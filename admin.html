@@ -376,7 +376,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Contraseña (Opcional)</label>
-                    <input type="password" id="userPass" placeholder="toco123 por defecto" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                    <input type="password" id="userPass" placeholder="Opcional (usa DEFAULT_USER_PASSWORD)" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
                 </div>
                 <div id="initialStockContainer" class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Stock Inicial</label>
@@ -384,7 +384,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Referido por (Nombre/Email)</label>
-                    <input type="text" id="userReferredBy" placeholder="Ej: Santi o santi@toco.com" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                    <input type="text" id="userReferredBy" placeholder="Ej: nombre o email del referente" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
                 </div>
                 <div class="flex gap-4 pt-4">
                     <button type="button" onclick="closeUserModal()" class="btn-secondary flex-1">Cancelar</button>
@@ -444,7 +444,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Nombre del Toker</label>
-                    <input type="text" id="commUserName" required placeholder="Ej: Santi" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
+                    <input type="text" id="commUserName" required placeholder="Nombre del Toker" class="w-full px-4 py-3 rounded-toco border border-gray-100 bg-surface focus:border-primary outline-none transition-all">
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-widest text-text-sec">Descripción / Uso</label>
@@ -1024,7 +1024,7 @@
             const data = { 
                 name: document.getElementById('userName').value, 
                 email: document.getElementById('userEmail').value,
-                password: id ? passVal : (passVal || 'toco123'),
+                password: id ? passVal : (passVal || undefined),
                 initialStock: Number(document.getElementById('userInitialStock').value || 0),
                 referredBy: document.getElementById('userReferredBy').value || null
             };

@@ -4,11 +4,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Base de Datos
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Base de datos
 *.db
 *.db-journal
 
-# Archivos de Sistema / IDE
+# Archivos de sistema / IDE
 .DS_Store
 .vscode/
 .idea/
@@ -17,11 +22,24 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-# Paquetes de despliegue (ZIPs)
+# Paquetes de despliegue
 *.zip
-toco_proyecto.zip
-toco_update_final.zip
 
 # Logs
 logs
 *.log
+
+# Material interno / prompts / esqueletos (no colaborativos)
+material/
+private/
+*.prompt.md
+prmpt_*.md
+prompt_*.md
+instructivo*.md
+DESIGN.md
+**/DESIGN.md
+screen.png
+**/screen.png
+
+# Uploads locales (mantener estructura, no datos privados nuevos)
+# public/uploads/comunidad/*.jpg  # las demos actuales pueden quedar versionadas
