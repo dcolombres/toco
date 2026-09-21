@@ -57,6 +57,18 @@
             background-color: #f9f9f9;
             background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
         }
+
+        .util-counter-glow {
+            background:
+                radial-gradient(ellipse at 20% 0%, rgba(251, 133, 0, 0.35), transparent 55%),
+                radial-gradient(ellipse at 90% 100%, rgba(42, 157, 143, 0.25), transparent 50%),
+                #2B2D42;
+        }
+
+        #utilidades-count {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.04em;
+        }
     </style>
 </head>
 
@@ -126,7 +138,7 @@
                     </h1>
                     <p class="text-lg md:text-xl text-text-sec mb-8 leading-relaxed">
                         No es solo madera. Es una misión: recordarnos que lo pequeño y lo pausado todavía importan.
-                        <strong>Ganá $2.500 por cada TOCO</strong> que encuentre su dueño.
+                        <strong>Ganá $$$ por cada TOCO</strong> que encuentre su dueño.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 mb-6">
                         <a href="#registro"
@@ -291,6 +303,36 @@
                     </div>
                     <p class="text-text-sec text-lg uppercase tracking-widest font-bold block mt-2">INFINITAS UTILIDADES... CONTANOS TU IDEA
                     </p>
+                </div>
+
+                <!-- Contador + último uso -->
+                <div class="grid md:grid-cols-5 gap-5 mb-14 fade-in max-w-5xl mx-auto">
+                    <div class="md:col-span-2 util-counter-glow rounded-toco p-8 md:p-10 text-white relative overflow-hidden flex flex-col justify-center">
+                        <div class="absolute inset-0 opacity-10 wood-pattern pointer-events-none"></div>
+                        <p class="relative text-[11px] font-bold uppercase tracking-[0.2em] text-white/55 mb-3">Utilidades registradas</p>
+                        <p class="relative text-6xl md:text-7xl font-title font-extrabold text-primary leading-none" id="utilidades-count">0</p>
+                        <p class="relative text-sm text-white/65 mt-4">
+                            hasta el <span id="utilidades-fecha" class="text-white font-semibold"></span>
+                        </p>
+                        <p class="relative text-[11px] text-white/40 mt-2">y sumando…</p>
+                    </div>
+
+                    <article class="md:col-span-3 bg-white rounded-toco border border-gray-100 shadow-sm overflow-hidden flex flex-col sm:flex-row">
+                        <div class="sm:w-44 md:w-52 flex-shrink-0 bg-surface">
+                            <img src="public/uploads/comunidad/toco-senalador-huerta.png"
+                                alt="TOCO usado como señalador de especies en una huerta"
+                                class="w-full h-44 sm:h-full object-cover">
+                        </div>
+                        <div class="p-6 md:p-8 flex flex-col justify-center text-left">
+                            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-primary mb-3">Último uso registrado</p>
+                            <h3 class="font-title font-extrabold text-xl md:text-2xl text-text-main leading-snug mb-3">
+                                “Señalador de especies para huerta”
+                            </h3>
+                            <p class="text-text-sec text-sm">
+                                <span class="font-semibold text-text-main">Marita B.</span> · Ituzaingó
+                            </p>
+                        </div>
+                    </article>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -653,6 +695,50 @@
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Contador de utilidades (anclado en 217 al 21/09/2026; +1 por día)
+        (function initUtilidadesCounter() {
+            const countEl = document.getElementById('utilidades-count');
+            const dateEl = document.getElementById('utilidades-fecha');
+            if (!countEl || !dateEl) return;
+
+            const today = new Date();
+            dateEl.textContent = today.toLocaleDateString('es-AR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const anchor = new Date(2026, 8, 21); // 21 sep 2026
+            const dayMs = 24 * 60 * 60 * 1000;
+            const daysSince = Math.max(0, Math.floor((today.setHours(0, 0, 0, 0) - anchor.setHours(0, 0, 0, 0)) / dayMs));
+            const target = 217 + daysSince;
+
+            let started = false;
+            const animate = () => {
+                if (started) return;
+                started = true;
+                const duration = 1600;
+                const start = performance.now();
+                const from = Math.max(0, target - 42);
+                const tick = (now) => {
+                    const t = Math.min(1, (now - start) / duration);
+                    const eased = 1 - Math.pow(1 - t, 3);
+                    countEl.textContent = Math.round(from + (target - from) * eased).toLocaleString('es-AR');
+                    if (t < 1) requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            };
+
+            const counterBlock = countEl.closest('.fade-in') || countEl;
+            const counterObserver = new IntersectionObserver((entries) => {
+                if (entries.some((e) => e.isIntersecting)) {
+                    animate();
+                    counterObserver.disconnect();
+                }
+            }, { threshold: 0.35 });
+            counterObserver.observe(counterBlock);
+        })();
 
         document.getElementById('registrationForm').addEventListener('submit', (e) => {
             e.preventDefault();
