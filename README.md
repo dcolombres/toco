@@ -18,6 +18,17 @@ npm start
 
 Abrí `http://localhost:3000`.
 
+### Panel en GitHub Pages (modo demo)
+
+En Pages no hay Node: el panel corre **emulado** (datos en el navegador).
+
+1. Entrá a `…/login.html`
+2. Usá:
+   - Toker: `toker@demo.toco` / `demo`
+   - Admin: `admin@demo.toco` / `demo`
+
+Cuando el backend Node esté desplegado y `/api/health` responda, el panel usa la API real automáticamente.
+
 ## Colaboración
 
 1. Creá una rama desde `main`.

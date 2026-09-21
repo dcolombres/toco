@@ -4,6 +4,7 @@
 window.TOCO_PUBLIC_CONFIG = {
     whatsappNumber: '54911XXXXXXXX',
     apiBase: '/api'
+    // demoMode: true
 };
 
 window.TOCO_WA = function (text) {

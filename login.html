@@ -34,6 +34,12 @@
             </button>
         </form>
 
+        <div id="demo-hint" class="hidden mt-6 p-4 rounded-toco bg-surface border border-gray-100 text-xs text-text-sec space-y-1">
+            <p class="font-bold text-text-main uppercase tracking-widest text-[10px]">Modo demo</p>
+            <p>Toker: <code class="text-primary">toker@demo.toco</code> / <code>demo</code></p>
+            <p>Admin: <code class="text-primary">admin@demo.toco</code> / <code>demo</code></p>
+        </div>
+
         <div class="mt-8 flex justify-between items-center">
             <a href="index.html" class="text-xs text-text-sec hover:text-primary transition-colors flex items-center gap-1">
                 <i data-lucide="arrow-left" class="w-3 h-3"></i> Volver a la web
@@ -44,10 +50,22 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="js/config.js"></script>
+    <script src="js/panel-demo.js"></script>
     <script src="js/app.js"></script>
     <script>
         lucide.createIcons();
         document.getElementById('forgot-password-link').href = TOCO_WA('Hola, olvidé mi contraseña del panel');
+
+        (async () => {
+            const demo = await Mode.resolve();
+            const hint = document.getElementById('demo-hint');
+            if (demo && hint) {
+                hint.classList.remove('hidden');
+                document.getElementById('email').value = 'toker@demo.toco';
+                document.getElementById('password').value = 'demo';
+            }
+        })();
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;

@@ -6,7 +6,9 @@ window.TOCO_PUBLIC_CONFIG = {
     // Formato internacional sin + ni espacios. Ej: 54911XXXXXXXX
     whatsappNumber: '54911XXXXXXXX',
     // Base de API (dejar vacío o '/api' en local)
-    apiBase: '/api'
+    apiBase: '/api',
+    // true = forzar panel demo; false = forzar API; omitir = auto (GH Pages / sin API → demo)
+    // demoMode: true
 };
 
 window.TOCO_WA = function (text) {
